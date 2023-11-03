@@ -1,7 +1,7 @@
 output "websocket-endpoint" {
-    value = "${aws_apigatewayv2_api.order_messenger_api_gateway.api_endpoint}/${var.api_stage_name}"
+  value = "${aws_apigatewayv2_api.order_messenger_api_gateway.api_endpoint}/${var.api_stage_name}"
 }
 
 output "captureImagebucketName" {
-    value = "s3://${aws_s3_bucket.captureImage.id}"
+  value = "s3://${aws_s3_bucket.captureImage.id}"
 }

@@ -19,8 +19,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Environment     = "develop"
-      Application      = "Order_${var.application_name}"
+      Environment = "develop"
+      Application = "Order_${var.application_name}"
     }
   }
 }
@@ -99,9 +99,9 @@ resource "aws_apigatewayv2_route" "order_messenger_api_sendmessage_route" {
 
 resource "aws_apigatewayv2_stage" "order_messenger_api_stage" {
   api_id      = aws_apigatewayv2_api.order_messenger_api_gateway.id
-  name        = "${var.api_stage_name}"
+  name        = var.api_stage_name
   auto_deploy = true
-  
+
 }
 
 resource "aws_lambda_permission" "order_messenger_lambda_permissions" {

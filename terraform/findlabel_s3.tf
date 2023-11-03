@@ -26,18 +26,33 @@ resource "aws_s3_bucket" "captureImage" {
 }
 
 
-# resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
-#   bucket = aws_s3_bucket.captureImage.id
-#   lambda_function {
-#     lambda_function_arn = aws_lambda_function.findlabelsfromImage_lambda.arn
-#     events              = ["s3:ObjectCreated:*"]
-#   }
-# }
+resource "null_resource" "wait_for_lambda_trigger" {
+  depends_on   = [aws_lambda_permission.s3_trigger]
+  provisioner "local-exec" {
+    command = "sleep 60"
+  }
+}
 
-# resource "aws_lambda_permission" "test" {
-#   statement_id  = "AllowS3Invoke"
-#   action        = "lambda:InvokeFunction"
-#   function_name = aws_lambda_function.findlabelsfromImage_lambda.function_name
-#   principal     = "s3.amazonaws.com"
-#   source_arn    = "arn:aws:s3:::${aws_s3_bucket.captureImage.id}"
-# }
+resource "aws_lambda_permission" "s3_trigger" {
+  statement_id  = "AllowS3Invoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.findlabelsfromImage_lambda.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = "arn:aws:s3:::${aws_s3_bucket.captureImage.id}"
+}
+
+resource "aws_s3_bucket_notification" "aws-lambda-trigger" {
+  bucket = aws_s3_bucket.captureImage.id
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.findlabelsfromImage_lambda.arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+
+  depends_on = [
+    aws_lambda_function.findlabelsfromImage_lambda,
+    aws_s3_bucket.captureImage,
+    null_resource.wait_for_lambda_trigger
+  ]
+}
+
+

@@ -12,28 +12,28 @@ data "aws_iam_policy_document" "order_messenger_lambda_policy" {
   statement {
     actions = [
       "rekognition:*",
-      ]
+    ]
     effect    = "Allow"
     resources = ["*"]
   }
   statement {
     actions = [
       "s3:*",
-      ]
+    ]
     effect    = "Allow"
-    resources = [aws_s3_bucket.captureImage.arn,"${aws_s3_bucket.captureImage.arn}/**"]
+    resources = [aws_s3_bucket.captureImage.arn, "${aws_s3_bucket.captureImage.arn}/**"]
   }
 
   statement {
     actions = [
       "lambda:InvokeFunction",
       "lambda:InvokeAsync"
-      ]
+    ]
     effect    = "Allow"
     resources = ["*"]
   }
 
-  
+
 
   statement {
     actions = [
@@ -60,11 +60,11 @@ data "aws_iam_policy_document" "order_messenger_api_gateway_policy" {
     actions = [
       "lambda:InvokeFunction",
     ]
-    effect    = "Allow"
+    effect = "Allow"
     resources = [aws_lambda_function.order_messenger_lambda.arn,
-    aws_lambda_function.order_default_messenger_lambda.arn,
-    aws_lambda_function.order_send_messenger_lambda.arn,
-    aws_lambda_function.order_disconnect_messenger_lambda.arn
+      aws_lambda_function.order_default_messenger_lambda.arn,
+      aws_lambda_function.order_send_messenger_lambda.arn,
+      aws_lambda_function.order_disconnect_messenger_lambda.arn
     ]
   }
 }
@@ -157,7 +157,7 @@ resource "aws_lambda_function" "order_default_messenger_lambda" {
 
   environment {
     variables = {
-      "table"       = aws_dynamodb_table.order_messenger_table.id
+      "table" = aws_dynamodb_table.order_messenger_table.id
     }
   }
 }
@@ -172,7 +172,7 @@ resource "aws_lambda_function" "order_messenger_lambda" {
 
   environment {
     variables = {
-      "table"       = aws_dynamodb_table.order_messenger_table.id
+      "table" = aws_dynamodb_table.order_messenger_table.id
     }
   }
 }
@@ -187,7 +187,7 @@ resource "aws_lambda_function" "order_disconnect_messenger_lambda" {
 
   environment {
     variables = {
-      "table"       = aws_dynamodb_table.order_messenger_table.id
+      "table" = aws_dynamodb_table.order_messenger_table.id
     }
   }
 }
@@ -203,8 +203,8 @@ resource "aws_lambda_function" "order_send_messenger_lambda" {
 
   environment {
     variables = {
-      "table"       = aws_dynamodb_table.order_messenger_table.id,
-      "endpoint" = replace("${aws_apigatewayv2_api.order_messenger_api_gateway.api_endpoint}/${var.api_stage_name}","wss://","")
+      "table"    = aws_dynamodb_table.order_messenger_table.id,
+      "endpoint" = replace("${aws_apigatewayv2_api.order_messenger_api_gateway.api_endpoint}/${var.api_stage_name}", "wss://", "")
     }
   }
 }

@@ -1,9 +1,9 @@
 variable "application_name" {
-    type = string
-    nullable = false
+  type     = string
+  nullable = false
 }
 variable "api_stage_name" {
-  type = string
+  type    = string
   default = "develop"
 }
 

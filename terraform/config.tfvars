@@ -1,2 +1,2 @@
 application_name = "AFC"
-api_stage_name="develop"
+api_stage_name   = "develop"

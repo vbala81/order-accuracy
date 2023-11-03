@@ -3,5 +3,5 @@ locals {
 }
 
 locals {
-  format_date = formatdate("YYYYDDMM",timestamp())
+  format_date = formatdate("YYYYDDMM", timestamp())
 }
