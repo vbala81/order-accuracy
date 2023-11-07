@@ -1,0 +1,22 @@
+
+<nav class="navbar navbar-light bg-light">
+    <!-- Navbar content -->
+    <h3 class="col-2 text-center"  style="color: #0000c9;"><b>{{title}}</b></h3>
+  </nav>
+  
+  <div class="container" >
+    <div class="row justify-content-md-center" [hidden]="isLoggedIn">
+        <div class="col-lg-6 text-center">
+            <h3>Customer Login</h3>
+            <button type="button" class="btn btn-primary btn-lg" (click)="goCustomerDashboard()">GO>></button>
+        </div>
+        <div class="col-lg-6 text-center">
+          <h3>Store Login</h3>
+          <button type="button" class="btn btn-success btn-lg" (click)="goStoreDashboard()">GO>></button>
+      
+    </div>
+</div>
+
+  <router-outlet></router-outlet>
+  <!-- <app-messages></app-messages> -->
+  

@@ -1,0 +1,40 @@
+# this is an auto generated file. This will be overwritten
+
+subscription OnCreateORDERS($filter: ModelSubscriptionORDERSFilterInput) {
+  onCreateORDERS(filter: $filter) {
+    id
+    order
+    orderdate
+    isready
+    orderissue
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateORDERS($filter: ModelSubscriptionORDERSFilterInput) {
+  onUpdateORDERS(filter: $filter) {
+    id
+    order
+    orderdate
+    isready
+    orderissue
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteORDERS($filter: ModelSubscriptionORDERSFilterInput) {
+  onDeleteORDERS(filter: $filter) {
+    id
+    order
+    orderdate
+    isready
+    orderissue
+    createdAt
+    updatedAt
+    __typename
+  }
+}

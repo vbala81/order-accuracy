@@ -1,0 +1,49 @@
+# this is an auto generated file. This will be overwritten
+
+mutation CreateORDERS(
+  $input: CreateORDERSInput!
+  $condition: ModelORDERSConditionInput
+) {
+  createORDERS(input: $input, condition: $condition) {
+    id
+    order
+    orderdate
+    isready
+    orderissue
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation UpdateORDERS(
+  $input: UpdateORDERSInput!
+  $condition: ModelORDERSConditionInput
+) {
+  updateORDERS(input: $input, condition: $condition) {
+    id
+    order
+    orderdate
+    isready
+    orderissue
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation DeleteORDERS(
+  $input: DeleteORDERSInput!
+  $condition: ModelORDERSConditionInput
+) {
+  deleteORDERS(input: $input, condition: $condition) {
+    id
+    order
+    orderdate
+    isready
+    orderissue
+    createdAt
+    updatedAt
+    __typename
+  }
+}
