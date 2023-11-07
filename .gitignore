@@ -57,3 +57,8 @@ terraform.rc
 # Custom
 build/
 terraform/main.zip
+ .angular
+ .vscode
+ dist/
+ node_modules/
+ 
