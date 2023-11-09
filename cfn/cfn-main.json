@@ -1,0 +1,30 @@
+[
+    { "ParameterKey": "ClientName",
+      "ParameterValue": "aabg"
+    },
+    {
+      "ParameterKey": "ProductName",
+      "ParameterValue": "mighty"
+    },
+    {
+      "ParameterKey": "ModuleName",
+      "ParameterValue": "byom"
+    },
+    {
+      "ParameterKey": "ModuleVersion",
+      "ParameterValue": "v1"
+    },
+    {
+      "ParameterKey": "InstanceType",
+      "ParameterValue": "ml.t3.medium"
+    },
+    {
+      "ParameterKey": "NotebookInstanceName",
+      "ParameterValue": "darknet"
+    },
+    {
+      "ParameterKey": "VolumeSizeInGB",
+      "ParameterValue": "10"
+    }
+  ]
+  

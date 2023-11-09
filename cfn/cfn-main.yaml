@@ -1,0 +1,146 @@
+##########################################################
+# Filename: cfn-main.yaml
+
+# Version History : v1: #  Authored by Roberto to deploy a SageMaker notebook
+############################################################
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ClientName:
+    Type: String
+    Description: REQUIRED - Name of the Client. Abbreviated client name (e.g. aabg) in lower case letters - this must be all one word alphanumeric
+    MinLength: 1
+    MaxLength: 20
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers
+  ProductName:
+    Type: String
+    Description: REQUIRED - Name of the Product (e.g. artifact) in lower case letters - this must be all one word alphanumeric
+    MinLength: 1
+    MaxLength: 10
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers
+  ModuleName:
+    Type: String
+    Description: REQUIRED - Please enter the name of the module in lower case letters (e.g. byom)
+  ModuleVersion:
+    Type: String
+    Description: REQUIRED - Version of the module in lower case letters (e.g. v1)
+  InstanceType:
+    Type: String
+    AllowedValues:
+      - ml.t3.medium
+      - ml.t3.large
+      - ml.t3.xlarge
+      - ml.t3.2xlarge
+      - ml.m5.large
+      - ml.m5.xlarge
+      - ml.m5.2xlarge
+      - ml.m5.4xlarge
+      - ml.m5.8xlarge
+      - ml.m5.12xlarge
+      - ml.m5.16xlarge
+      - ml.m5.24xlarge
+      - ml.m5d.large
+      - ml.m5d.xlarge
+      - ml.m5d.2xlarge
+      - ml.m5d.4xlarge
+      - ml.m5d.8xlarge
+      - ml.m5d.12xlarge
+      - ml.m5d.16xlarge
+      - ml.m5d.24xlarge
+      - ml.c5.large
+      - ml.c5.xlarge
+      - ml.c5.2xlarge
+      - ml.c5.4xlarge
+      - ml.c5.9xlarge
+      - ml.c5.12xlarge
+      - ml.c5.18xlarge
+      - ml.c5.24xlarge
+      - ml.r5.large
+      - ml.r5.xlarge
+      - ml.r5.2xlarge
+      - ml.r5.4xlarge
+      - ml.r5.8xlarge
+      - ml.r5.12xlarge
+      - ml.r5.16xlarge
+      - ml.r5.24xlarge
+      - ml.p3.2xlarge
+      - ml.p3.8xlarge
+      - ml.p3.16xlarge
+      - ml.p3dn.24xlarge
+      - ml.g4dn.xlarge
+      - ml.g4dn.2xlarge
+      - ml.g4dn.4xlarge
+      - ml.g4dn.8xlarge
+      - ml.g4dn.12xlarge
+      - ml.g4dn.16xlarge
+      - ml.g5.xlarge
+      - ml.g5.2xlarge
+      - ml.g5.4xlarge
+      - ml.g5.8xlarge
+      - ml.g5.12xlarge
+      - ml.g5.24xlarge
+      - ml.g5.48xlarge
+    Description: REQUIRED - The type of ML compute instance to launch for the notebook instance
+  NotebookInstanceName:
+    Type: String
+    Description: REQUIRED - The name of the new notebook instance.
+  VolumeSizeInGB:
+    Type: String
+    Description: The size, in GB, of the ML storage volume to attach to the notebook instance
+    Default: 5
+  SubnetId:
+    Type: String
+    Description: The ID of the subnet in a VPC to which you would like to have a connectivity from your ML compute instance.
+    Default: ""
+  SecurityGroupIds:
+    Type: List<String>
+    Description: The VPC security group IDs, in the form sg-xxxxxxxx. The security groups must be for the same VPC as specified in the subnet.
+    Default: ""
+
+Conditions:
+  IsSubnetIdEmpty: !Not [ !Equals [!Ref SubnetId, ""] ]
+  IsSecurityGroupIdsEmpty: !Not [ !Equals [ !Join ["",!Ref SecurityGroupIds], ""] ]
+
+Resources:
+  SageMakerNotebook: # Creates a SageMaker Notebook Instance
+    Type: AWS::SageMaker::NotebookInstance
+    Properties:
+      InstanceType: !Ref InstanceType
+      NotebookInstanceName: !Ref NotebookInstanceName
+      RoleArn:
+        Fn::GetAtt:
+        - SageMakerExecutionRole
+        - Arn
+      Tags:
+        - Key:   Module
+          Value: !Ref ModuleName
+        - Key:   Project
+          Value: !Ref ClientName
+        - Key:   ModuleVersion
+          Value: !Ref ModuleVersion
+        - Key:   Product
+          Value: !Ref ProductName
+      VolumeSizeInGB: !Ref VolumeSizeInGB
+      SubnetId: !If [ IsSubnetIdEmpty, !Ref SubnetId, !Ref "AWS::NoValue" ]
+      SecurityGroupIds: !If [ IsSecurityGroupIdsEmpty, !Ref SecurityGroupIds, !Ref "AWS::NoValue" ]
+  SageMakerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "sagemaker.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonSageMakerFullAccess"
+Outputs: # Instance Id
+   BasicNotebookInstanceId:
+    Value: !Ref SageMakerNotebook
+
