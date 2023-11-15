@@ -16,7 +16,7 @@
     },
     {
       "ParameterKey": "InstanceType",
-      "ParameterValue": "ml.t3.medium"
+      "ParameterValue": "ml.m5.4xlarge"
     },
     {
       "ParameterKey": "NotebookInstanceName",

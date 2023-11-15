@@ -27,60 +27,6 @@ Parameters:
     Description: REQUIRED - Version of the module in lower case letters (e.g. v1)
   InstanceType:
     Type: String
-    AllowedValues:
-      - ml.t3.medium
-      - ml.t3.large
-      - ml.t3.xlarge
-      - ml.t3.2xlarge
-      - ml.m5.large
-      - ml.m5.xlarge
-      - ml.m5.2xlarge
-      - ml.m5.4xlarge
-      - ml.m5.8xlarge
-      - ml.m5.12xlarge
-      - ml.m5.16xlarge
-      - ml.m5.24xlarge
-      - ml.m5d.large
-      - ml.m5d.xlarge
-      - ml.m5d.2xlarge
-      - ml.m5d.4xlarge
-      - ml.m5d.8xlarge
-      - ml.m5d.12xlarge
-      - ml.m5d.16xlarge
-      - ml.m5d.24xlarge
-      - ml.c5.large
-      - ml.c5.xlarge
-      - ml.c5.2xlarge
-      - ml.c5.4xlarge
-      - ml.c5.9xlarge
-      - ml.c5.12xlarge
-      - ml.c5.18xlarge
-      - ml.c5.24xlarge
-      - ml.r5.large
-      - ml.r5.xlarge
-      - ml.r5.2xlarge
-      - ml.r5.4xlarge
-      - ml.r5.8xlarge
-      - ml.r5.12xlarge
-      - ml.r5.16xlarge
-      - ml.r5.24xlarge
-      - ml.p3.2xlarge
-      - ml.p3.8xlarge
-      - ml.p3.16xlarge
-      - ml.p3dn.24xlarge
-      - ml.g4dn.xlarge
-      - ml.g4dn.2xlarge
-      - ml.g4dn.4xlarge
-      - ml.g4dn.8xlarge
-      - ml.g4dn.12xlarge
-      - ml.g4dn.16xlarge
-      - ml.g5.xlarge
-      - ml.g5.2xlarge
-      - ml.g5.4xlarge
-      - ml.g5.8xlarge
-      - ml.g5.12xlarge
-      - ml.g5.24xlarge
-      - ml.g5.48xlarge
     Description: REQUIRED - The type of ML compute instance to launch for the notebook instance
   NotebookInstanceName:
     Type: String
@@ -107,7 +53,8 @@ Resources:
     Type: AWS::SageMaker::NotebookInstance
     Properties:
       InstanceType: !Ref InstanceType
-      NotebookInstanceName: !Ref NotebookInstanceName
+      NotebookInstanceName:
+          !Sub '${ClientName}-${ProductName}-${AWS::Region}-${ModuleName}-${ModuleVersion}-${NotebookInstanceName}'  
       RoleArn:
         Fn::GetAtt:
         - SageMakerExecutionRole
@@ -122,11 +69,37 @@ Resources:
         - Key:   Product
           Value: !Ref ProductName
       VolumeSizeInGB: !Ref VolumeSizeInGB
+      AdditionalCodeRepositories:
+        - "https://github.com/vbala81/order-accuracy"
       SubnetId: !If [ IsSubnetIdEmpty, !Ref SubnetId, !Ref "AWS::NoValue" ]
       SecurityGroupIds: !If [ IsSecurityGroupIdsEmpty, !Ref SecurityGroupIds, !Ref "AWS::NoValue" ]
+  NotebookAccessPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecr:*
+              - iam:PassRole
+              - logs:*
+              - sagemaker:*
+            Effect: Allow
+            Resource: "*"
+          - Action: s3:ListAllMyBuckets
+            Effect: Allow
+            Resource: arn:aws:s3:::*
+          - Action: s3:*
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: 
+        !Sub '${ClientName}-${ProductName}-${AWS::Region}-${ModuleName}-${ModuleVersion}-${NotebookInstanceName}-policy'      
+      Roles:
+        - Ref: SageMakerExecutionRole      
   SageMakerExecutionRole:
     Type: AWS::IAM::Role
     Properties:
+      RoleName: !Sub '${ClientName}-${ProductName}-${AWS::Region}-${ModuleName}-${ModuleVersion}-${NotebookInstanceName}-role'
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
