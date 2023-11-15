@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { FOODITEMS, FoodItem } from '../showorders/fooditem';
 import { Order } from '../showorders/order';
 import { Observable, of } from 'rxjs';
-import { API } from 'aws-amplify';
-import {APIService, CreateORDERSInput} from '../API.service'
+//import { API } from 'aws-amplify';
+//import {APIService, CreateORDERSInput} from '../API.service'
+import { OrderAPIService } from '../OrderAPI.service';
 //import {CreateORDERS} from "./graphql/mutations.graphql"
 
 @Component({
@@ -16,7 +17,7 @@ export class PlaceorderComponent {
   customerorder: String = "";
   order:Order = {order: [], orderdate: new Date(), isready: false, orderissue:""};
   isLoggedIn = false;
-  constructor (private api: APIService) {}
+  constructor (private api: OrderAPIService) {}
   ngOnInit() {
       const foodItems = this.getFoodItems().subscribe(food => this.foodItems = food);
       
@@ -37,13 +38,16 @@ export class PlaceorderComponent {
   }
 
   async placeOrder() {
-    var orderInput: CreateORDERSInput = {};
-    orderInput.isready = this.order.isready;
-    orderInput.order = JSON.stringify(this.order.order);
-    orderInput.orderdate = this.order.orderdate.toISOString();
-    console.log(orderInput);
+    // var orderInput: CreateORDERSInput = {};
+    // orderInput.isready = this.order.isready;
+    // orderInput.order = JSON.stringify(this.order.order);
+    // orderInput.orderdate = this.order.orderdate.toISOString();
+    // console.log(orderInput);
 
-      let result = await this.api.CreateORDERS(orderInput)
+    //   let result = await this.api.CreateORDERS(orderInput)
+
+    let result = this.api.insertOrder(this.order);
+    
      
 
   }

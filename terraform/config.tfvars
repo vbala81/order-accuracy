@@ -1,2 +1,2 @@
-application_name = "AFC"
+application_name = "MANIAFC"
 api_stage_name   = "develop"

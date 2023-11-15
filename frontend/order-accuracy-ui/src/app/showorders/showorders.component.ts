@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FOODITEMS, FoodItem } from './fooditem';
 import { Observable,of } from 'rxjs';
 import { Order } from './order';
-import {APIService, CreateORDERSInput} from '../API.service'
+import { OrderAPIService } from '../OrderAPI.service';
 import { orderDisplay } from './orderdisplay';
 import { interval } from 'rxjs';
 
@@ -18,7 +18,7 @@ export class ShowordersComponent {
   returnorder: any
 
   
-  constructor (private api: APIService) {}
+  constructor (private api: OrderAPIService) {}
   ngOnInit() {
      
 
@@ -37,25 +37,27 @@ export class ShowordersComponent {
 
   
   async getOrders() {
-    let result = await this.api.ListORDERS();
-   // console.log(result);
-    result.items.forEach ((item)=> {
-      console.log("======" + item);
-      this.order = {order: '', orderdate: '' , orderissue:"", orderId:''};
-       this.returnorder = item?.order
-      this.returnorder = JSON.parse(this.returnorder?this.returnorder:"[]")
-      this.returnorder = this.returnorder.map((el:any)=> el.name)
-      //console.log(this.returnorder.join(","))
-      this.order.order = this.returnorder.join(",")
-      this.order.orderId = item!.id
-      this.order.orderdate = item?.orderdate!;
-    //  console.log(this.order)
+  //   let result = await this.api.ListORDERS();
+  //  // console.log(result);
+  //   result.items.forEach ((item)=> {
+  //     console.log("======" + item);
+  //     this.order = {order: '', orderdate: '' , orderissue:"", orderId:''};
+  //      this.returnorder = item?.order
+  //     this.returnorder = JSON.parse(this.returnorder?this.returnorder:"[]")
+  //     this.returnorder = this.returnorder.map((el:any)=> el.name)
+  //     //console.log(this.returnorder.join(","))
+  //     this.order.order = this.returnorder.join(",")
+  //     this.order.orderId = item!.id
+  //     this.order.orderdate = item?.orderdate!;
+  //   //  console.log(this.order)
      
-      this.orders.push(this.order);
+  //     this.orders.push(this.order);
 
-    })
-    console.log(this.orders
-      )
+  //   })
+  //   console.log(this.orders
+  //     )
+
+  
    
     }
 }

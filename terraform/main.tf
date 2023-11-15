@@ -6,16 +6,17 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket = "terraform-plusone-oct31"
-    key    = "plusone/terraform.tfstate"
-    region = "us-east-1"
-  }
+  # backend "s3" {
+  #   bucket = "terraform-plusone-oct31"
+  #   key    = "plusone/terraform.tfstate"
+  #   region = "us-east-1"
+  # }
   required_version = ">= 1.3.6"
 }
 
 provider "aws" {
   region = "us-east-1"
+  profile = "AWS_868024899531_iesawsna-sandbox"
 
   default_tags {
     tags = {
@@ -152,4 +153,53 @@ resource "aws_dynamodb_table" "order_messenger_table" {
     attribute_name = "ExpirationTime"
     enabled        = true
   }
+}
+
+resource "aws_dynamodb_table" "orders" {
+  name           = "${var.application_name}-orders-table"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 2
+  write_capacity = 2
+  hash_key       = "Id"
+
+  attribute {
+    name = "Id"
+    type = "S"
+  }
+ 
+  attribute {
+    name = "orderdate"
+    type = "S"
+  }
+  # attribute {
+  #   name = "order"
+  #   type = "S"
+  # }
+  # attribute {
+  #   name = "orderissue"
+  #   type = "S"
+  # }
+  # attribute {
+  #   name = "isready"
+  #   type = "B"
+  # }
+  # attribute {
+  #   name = "s3bucketurl"
+  #   type = "S"
+  # }
+  attribute {
+    name = "orderId"
+    type = "S"
+  }
+  global_secondary_index {
+    name               = "OrderIdtimestampIndex"
+    hash_key           = "orderId"
+    range_key          = "orderdate"
+    write_capacity     = 10
+    read_capacity      = 10
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["order","orderissue","isready","s3bucketurl"]
+  }
+
+
 }

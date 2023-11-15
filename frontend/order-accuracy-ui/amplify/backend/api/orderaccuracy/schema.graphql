@@ -1,7 +1,0 @@
-type ORDERS @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  order: AWSJSON
-  orderdate: AWSDateTime
-  isready: Boolean
-  orderissue: String
-}

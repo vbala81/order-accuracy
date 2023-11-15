@@ -42,7 +42,8 @@ data "aws_iam_policy_document" "order_messenger_lambda_policy" {
       "dynamodb:Scan",
     ]
     effect    = "Allow"
-    resources = [aws_dynamodb_table.order_messenger_table.arn]
+    resources = [aws_dynamodb_table.order_messenger_table.arn,
+                aws_dynamodb_table.orders.arn]
   }
 
   statement {
@@ -64,9 +65,11 @@ data "aws_iam_policy_document" "order_messenger_api_gateway_policy" {
     resources = [aws_lambda_function.order_messenger_lambda.arn,
       aws_lambda_function.order_default_messenger_lambda.arn,
       aws_lambda_function.order_send_messenger_lambda.arn,
-      aws_lambda_function.order_disconnect_messenger_lambda.arn
+      aws_lambda_function.order_disconnect_messenger_lambda.arn,
+      //aws_lamda_function.order_insert_lambda.arn
     ]
   }
+  //depends_on = [ aws_lambda_function.order_insert_lambda ]
 }
 
 
