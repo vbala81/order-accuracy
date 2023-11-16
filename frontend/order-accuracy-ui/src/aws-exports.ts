@@ -10,7 +10,7 @@
 // };
 
 const awsmobile = {
-    "aws_api_gateway_url" : "https://8agtrqpm67.execute-api.us-east-1.amazonaws.com/develop"
+    "aws_api_gateway_url" : "https://3reky1vkij.execute-api.us-east-1.amazonaws.com/develop"
 }
 
 

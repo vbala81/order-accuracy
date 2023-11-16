@@ -15,7 +15,7 @@ import { OrderAPIService } from '../OrderAPI.service';
 export class PlaceorderComponent {
   foodItems:FoodItem[] = []
   customerorder: String = "";
-  order:Order = {order: [], orderdate: new Date(), isready: false, orderissue:""};
+  order:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderissue:"",s3imagelink:''};
   isLoggedIn = false;
   constructor (private api: OrderAPIService) {}
   ngOnInit() {

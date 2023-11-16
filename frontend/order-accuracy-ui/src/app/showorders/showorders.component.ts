@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FOODITEMS, FoodItem } from './fooditem';
 import { Observable,of } from 'rxjs';
-import { Order } from './order';
+import { Order, Results } from './order';
 import { OrderAPIService } from '../OrderAPI.service';
 import { orderDisplay } from './orderdisplay';
 import { interval } from 'rxjs';
@@ -13,7 +13,9 @@ import { interval } from 'rxjs';
   styleUrls: ['./showorders.component.css']
 })
 export class ShowordersComponent {
-  orders:orderDisplay[] = [];
+  orders:Order[] = [];
+  message: String = "Waiting for the orders..";
+  result!: Results;
   order:orderDisplay = {order: '', orderdate: '' , orderissue:"", orderId:''};
   returnorder: any
 
@@ -25,11 +27,11 @@ export class ShowordersComponent {
      const interval$ = interval(5000);
 
      // Subscribe to the observable and do something every 1000 milliseconds
-     interval$.subscribe(val => {
-      this.orders = [];
+    //  interval$.subscribe(val => {
+    //   this.orders = [];
+    //   this.getOrders();
+    //  });
       this.getOrders();
-     });
-
 
 
   }
@@ -56,8 +58,15 @@ export class ShowordersComponent {
   //   })
   //   console.log(this.orders
   //     )
+    this.api.listorders().subscribe(
+      (results) => {
+        if(results.Items){
+            this.message = "Orders..."
+            this.orders = results.Items;
+        }
 
-  
-   
-    }
+      }
+    );
+
+  }
 }
