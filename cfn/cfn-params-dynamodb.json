@@ -1,0 +1,50 @@
+[
+    {
+        "ParameterKey": "ClientName",
+        "ParameterValue": "aabg"
+    },
+    {
+        "ParameterKey": "ProductName",
+        "ParameterValue": "mighty"
+    },
+    {
+        "ParameterKey": "ModuleName",
+        "ParameterValue": "byom"
+    },
+    {
+        "ParameterKey": "ModuleVersion",
+        "ParameterValue": "v1"
+    },
+    {
+        "ParameterKey": "TableName",
+        "ParameterValue": "order-accuracy"
+    },
+    {
+        "ParameterKey": "PrimaryKeyName",
+        "ParameterValue": "connectionId"
+    },
+    {
+        "ParameterKey": "PrimaryKeyType",
+        "ParameterValue": "S"
+    },
+    {
+        "ParameterKey": "SortKeyCheck",
+        "ParameterValue": "false"
+    },
+    {
+        "ParameterKey": "StreamEnabled",
+        "ParameterValue": "false"
+    },
+    {
+        "ParameterKey": "TableClass",
+        "ParameterValue": "STANDARD"
+    },
+    {
+        "ParameterKey": "PointInTimeRecovery",
+        "ParameterValue": "false"
+    },
+    {
+        "ParameterKey": "AutoScalingIAMRoleName",
+        "ParameterValue": "OA-Autoscaling-Role"
+    }
+]

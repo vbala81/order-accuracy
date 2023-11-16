@@ -1,0 +1,305 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Project Mighty DynamoDB Table
+Parameters:
+##### REQUIRED PARAMETERS #####
+  ClientName:
+    Type: String
+    Description: --REQUIRED-- Name of the Client. Abbreviated client name (e.g. aabg) in lower case letters - this must be all one word alphanumeric
+    Default: aabg
+    MinLength: 1
+    MaxLength: 20
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers
+  ProductName:
+    Type: String
+    Description: --REQUIRED-- Name of the Product (e.g. artemis|kinetic) in lower case letters - this must be all one word alphanumeric
+    Default: '8675309'
+    MinLength: 1
+    MaxLength: 10
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers  
+  ModuleName:
+    Type: String
+    Description: --REQUIRED--  Please enter the name of the module in lower case letters (e.g. kernel)
+  ModuleVersion:
+    Type: String
+    Description: --REQUIRED-- Name of the version (e.g. v1-0-0)
+  PrimaryKeyName:
+    Type: String 
+    Description: --REQUIRED-- Name of the Hash
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumberic characters
+  PrimaryKeyType:
+    Type: String 
+    Description: --REQUIRED--  Hash type of Primary Key
+    Default: S
+    AllowedPattern: '[S|N]'
+    ConstraintDescription: Must be either S (string) or N (number)
+  SortKeyCheck:
+    Type: String
+    Description: --REQUIRED-- Is a sort key needed in the table? If this is marked as true, the 'SortKeyName' and 'SortKeyType' Optional Parameters need to have a value, otherwise their defaults will be populated.
+    Default: false
+    AllowedValues: [true, false]
+  TableName:
+    Type: String
+    Description: Unique name of the table (will be placed as suffix)
+    Default: my-table
+    MinLength: 3 
+    MaxLength: 255 
+    AllowedPattern: '[a-zA-Z0-9_.-]+' 
+  TTLAttributeName:
+    Type: String 
+    Description: Name of attribute
+    MinLength: 1
+    MaxLength: 255
+    Default: ExpirationTime
+##### OPTIONAL PARAMETERS #####
+  SortKeyName:
+    Type: String
+    Description: Name of the range
+    Default: sortkey
+  SortKeyType:
+    Type: String 
+    Description: Hash type of Sort Key 
+    Default: S 
+    AllowedPattern: '[S|N]' 
+    ConstraintDescription: Must be either S (string) or N (number) 
+  StreamEnabled:
+    Type: String
+    Description: Does this table need a Dynamo Stream enabled?
+    Default: false
+    AllowedValues: [true, false]
+  StreamViewType:
+    Type: String
+    Description: When an item in the table is modified, determines what information is written to the stream for this table
+    Default: KEYS_ONLY
+    AllowedValues: [KEYS_ONLY, NEW_IMAGE, OLD_IMAGE, NEW_AND_OLD_IMAGES]
+  TableClass:
+    Type: String 
+    Description: The table class of the new table.
+    Default: STANDARD
+    AllowedValues: [STANDARD, STANDARD_INFREQUENT_ACCESS]
+  PointInTimeRecovery:
+    Type: String 
+    Description: The setting used to enable point in time recovery
+    Default: false
+    AllowedValues: [true, false]
+  ReadCapacityUnits:
+    Type: Number
+    Description: The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException.
+    Default: 5
+    MinValue: 5
+    MaxValue: 10000
+  WriteCapacityUnits:
+    Type: Number
+    Description: The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException.
+    Default: 5
+    MinValue: 5
+    MaxValue: 10000    
+  ProjectionType:
+    Type: String
+    Description: The set of attributes that are projected into the index (only if sort key)
+    Default: ALL
+    AllowedValues: [KEYS_ONLY, ALL, INCLUDE]
+  AutoScalingIAMRoleName:
+    Type: String
+    Description: Name of role to be created
+    Default: ApplicationAutoScalingDynamoDBTable
+
+Conditions:
+  SortKeyProvided: !Not [!Equals ["", !Ref SortKeyName]]
+  SortKeyRequired:
+    !Equals [true, !Ref SortKeyCheck]
+  NeedsDynamoStream:
+    !Equals [true, !Ref StreamEnabled]
+
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions: !If 
+        - SortKeyRequired
+        - 
+          - AttributeName: !Ref PrimaryKeyName
+            AttributeType: !Ref PrimaryKeyType
+          - AttributeName: !If 
+            - SortKeyProvided 
+            - !Ref SortKeyName
+            - !Ref AWS::NoValue
+            AttributeType: !If 
+            - SortKeyProvided 
+            - !Ref SortKeyType
+            - !Ref AWS::NoValue
+        - 
+          - AttributeName: !Ref PrimaryKeyName
+            AttributeType: !Ref PrimaryKeyType
+      BillingMode: PROVISIONED
+      GlobalSecondaryIndexes: 
+      - !If 
+        - SortKeyRequired
+        - IndexName: !Ref PrimaryKeyName
+          KeySchema:
+            - 
+              AttributeName: !Ref SortKeyName
+              KeyType: HASH
+          Projection:
+            ProjectionType: !Ref ProjectionType
+          ProvisionedThroughput:
+            ReadCapacityUnits: !Ref ReadCapacityUnits
+            WriteCapacityUnits: !Ref WriteCapacityUnits
+        - !Ref AWS::NoValue
+      KeySchema: !If
+        - SortKeyRequired
+        - 
+          - AttributeName: !Ref PrimaryKeyName
+            KeyType: HASH
+          - AttributeName: !Ref SortKeyName
+            KeyType: RANGE
+        - 
+          - AttributeName: !Ref PrimaryKeyName
+            KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: !Ref PointInTimeRecovery
+      ProvisionedThroughput: 
+        ReadCapacityUnits: !Ref ReadCapacityUnits
+        WriteCapacityUnits: !Ref WriteCapacityUnits
+      SSESpecification:
+        SSEEnabled: True
+      StreamSpecification:
+        !If [NeedsDynamoStream, StreamViewType: !Ref StreamViewType, !Ref AWS::NoValue]
+      TableClass: !Ref TableClass
+      TableName: !Join ["-", [!Ref ClientName, !Ref ProductName, !Ref AWS::Region, !Ref ModuleName, !Ref TableName]]
+      Tags:
+        - Key: Client
+          Value: !Ref ClientName
+        - Key: Product
+          Value: !Ref ProductName
+        - Key:   Module
+          Value: !Ref ModuleName
+        - Key:   ModuleVersion
+          Value: !Ref ModuleVersion
+      TimeToLiveSpecification:
+        AttributeName: !Ref TTLAttributeName
+        Enabled: true
+
+  AutoScalingIAMRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - dynamodb.application-autoscaling.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Description: Allows Application Auto Scaling to call DynamoDB and CloudWatch on your behalf.
+      Policies: 
+      - PolicyName: AWSApplicationAutoscalingDynamoDBTablePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:DescribeTable
+            - dynamodb:UpdateTable
+            - cloudwatch:PutMetricAlarm
+            - cloudwatch:DescribeAlarms
+            - cloudwatch:DeleteAlarms
+            Resource: "*"
+      RoleName: !Join ["-", [!Ref ClientName, !Ref ProductName, !Ref AWS::Region, !Ref ModuleName, !Ref AutoScalingIAMRoleName]]
+      Tags: 
+        - Key: Client
+          Value: !Ref ClientName
+        - Key: Product
+          Value: !Ref ProductName
+        - Key:   Module
+          Value: !Ref ModuleName
+        - Key:   ModuleVersion
+          Value: !Ref ModuleVersion
+
+  WriteCapacityScalableTarget:
+    DependsOn:
+      - Table
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MaxCapacity: 25
+      MinCapacity: 2
+      ResourceId: !Join ["/", ["table", !Ref Table]]
+      RoleARN: !GetAtt AutoScalingIAMRole.Arn
+      ScalableDimension: dynamodb:table:WriteCapacityUnits
+      ServiceNamespace: dynamodb
+     
+  ReadCapacityScalableTarget:
+    DependsOn:
+      - Table
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MaxCapacity: 25
+      MinCapacity: 2
+      ResourceId: !Join ["/", ["table", !Ref Table]]
+      RoleARN: !GetAtt AutoScalingIAMRole.Arn
+      ScalableDimension: dynamodb:table:ReadCapacityUnits
+      ServiceNamespace: dynamodb
+     
+  IndexWriteCapacityScalableTarget:
+    DependsOn:
+      - Table
+    Condition: SortKeyRequired
+    Type: "AWS::ApplicationAutoScaling::ScalableTarget"
+    Properties:
+     MaxCapacity: 25
+     MinCapacity: 2
+     ResourceId: !Join ["/", [!Ref Table, "index", !Ref PrimaryKeyName]]
+     RoleARN: !GetAtt AutoScalingIAMRole.Arn
+     ScalableDimension: "dynamodb:index:WriteCapacityUnits"
+     ServiceNamespace: dynamodb
+    
+  WriteScalingPolicy:
+    DependsOn:
+      - Table
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: WriteAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref WriteCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 75.0
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBWriteCapacityUtilization
+     
+  ReadScalingPolicy:
+    DependsOn:
+      - Table
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: ReadAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref ReadCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 75.0
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBReadCapacityUtilization
+
+Outputs:
+  TableName:
+    Value: !Ref Table
+    Description: Name of the DynamoDB table
+    Export:
+      Name: !Sub "${AWS::StackName}-TableName"
+  TableArn:
+    Value: !GetAtt Table.Arn
+    Description: ARN of the DynamoDB Table
+    Export:
+      Name: !Sub "${AWS::StackName}-TableArn"
+  DynamoDBStream:
+    Value: !GetAtt Table.StreamArn
+    Description: ARN of Dynamo Stream
+    Condition: NeedsDynamoStream
