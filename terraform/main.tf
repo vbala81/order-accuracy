@@ -6,11 +6,12 @@ terraform {
     }
   }
 
-  # backend "s3" {
-  #   bucket = "terraform-plusone-oct31"
-  #   key    = "plusone/terraform.tfstate"
-  #   region = "us-east-1"
-  # }
+  backend "s3" {
+    bucket = "order-accuracycapture-image-bucket"
+    key    = "plusone/terraform.tfstate"
+    region = "us-east-1"
+    profile = "AWS_868024899531_iesawsna-sandbox"
+  }
   required_version = ">= 1.3.6"
 }
 
