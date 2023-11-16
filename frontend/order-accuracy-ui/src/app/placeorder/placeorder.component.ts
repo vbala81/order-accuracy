@@ -14,8 +14,11 @@ import { OrderAPIService } from '../OrderAPI.service';
 })
 export class PlaceorderComponent {
   foodItems:FoodItem[] = []
+  placedOrders:Order[] = [];
+  isOrderplaced = false;
   customerorder: String = "";
   order:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderissue:"",s3imagelink:''};
+  placedOrder:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderissue:"",s3imagelink:''};
   isLoggedIn = false;
   constructor (private api: OrderAPIService) {}
   ngOnInit() {
@@ -46,7 +49,19 @@ export class PlaceorderComponent {
 
     //   let result = await this.api.CreateORDERS(orderInput)
 
-    let result = this.api.insertOrder(this.order);
+    this.api.insertOrder(this.order).subscribe(
+      {
+        next: (order ) => { 
+            this.placedOrder = order
+            this.isOrderplaced = true
+            this.placedOrders.push(this.placedOrder);
+        },
+        error: (e) => {
+            console.log(e);
+        } ,
+        complete: () => console.info('complete') 
+    }
+    )
     
      
 

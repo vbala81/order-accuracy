@@ -11,12 +11,8 @@ import { Observable } from 'rxjs';
 export class OrderAPIService {
     constructor(private http: HttpClient){}
 
-     insertOrder(order: Order) {
-        console.log(awsmobile);
-        this.http.post(awsmobile.aws_api_gateway_url+"/orders/insert",order).subscribe (
-            (data) => { console.log(data)},
-            (error) => { console.log(error)}
-        )
+     insertOrder(order: Order) : Observable<Order>{
+        return this.http.post<Order>(awsmobile.aws_api_gateway_url+"/orders/insert",order);
     }
 
     listorders () : Observable<Results> {
