@@ -9,6 +9,13 @@ export interface Item {
     optional: boolean
 }
 
+export interface orderItem {
+    name: String,
+    orderId: String,
+    item: String
+
+}
+
 export const FOODITEMS: FoodItem[] = [
     {
         name: "Burger", items: [{ name: "Ciabatta Bun", isadded: false, optional: true },

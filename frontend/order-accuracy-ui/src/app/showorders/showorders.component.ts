@@ -19,23 +19,54 @@ export class ShowordersComponent {
   result!: Results;
   order:orderDisplay = {order: '', orderdate: '' , orderissue:"", orderId:''};
   returnorder: any
+  
 
   
   constructor (private api: OrderAPIService) {
     this.api.observable.subscribe(_orders=> {
       console.log("In the component")
-     // console.log(_orders);
+     console.log(_orders);
       //let o = this.orders.filter(o => o.orderId===_orders.orderId);
       //console.log(_orders);
-      Object.assign(this.orders.filter(o => o.orderId===_orders.orderId),_orders);
+      //Object.assign(this.orders.filter(o => o.orderId===_orders.orderId),_orders);
 
       this.orders.map(function(order) {
          if(order.orderId===_orders.orderId)
-          Object.assign(order,_orders)
+            {
+               order.order.map(function(o){
+
+                  if(o.name == _orders.name)
+                    {
+                       o.items.map(_o=> { if(_o.name == _orders.item) _o.isadded = true})
+                    }
+
+                     // Checking the order status
+
+               let allareadded = o.items.filter(_all => !_all.isadded)
+               console.log(allareadded);
+               if(allareadded && allareadded.length==0)
+                  order.orderstatus = "Your order is ready to serve"
+                else
+                  order.orderstatus = "Your order is progress" 
+
+
+
+
+               });
+
+               
+               
+            }
       });
 
-      
+      let o = this.orders.filter(o => o.orderId===_orders.orderId);
+      console.log(o)
     })
+    
+
+
+    // this.api.loggedInObservable.subscribe(_log => this.isLoggedIn=_log);
+    this.api.isLoggedIn.next(true);
     
   }
   ngOnInit() {

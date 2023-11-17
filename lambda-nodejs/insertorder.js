@@ -15,7 +15,8 @@ exports.handler = async function (event, context) {
                 orderdate: detail.orderdate,
                 isready: detail.isready,
                 orderstatus: detail.orderstatus,
-                s3imagelink: ""
+                s3imagelink: "",
+                customerId: detail.customerId
             },
         }
         await ddb

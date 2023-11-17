@@ -3,6 +3,7 @@ import awsmobile from 'src/aws-exports';
 import { Order, Results } from './showorders/order';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { orderItem } from './showorders/fooditem';
 
 @Injectable({
     providedIn: 'root'
@@ -12,10 +13,15 @@ export class OrderAPIService {
 
     private websocket: WebSocket | undefined;
 
-    order:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
-    private subject: BehaviorSubject<Order> = new BehaviorSubject<Order>(this.order);
+    //order:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
+    order:orderItem = {orderId:'',name:'',item: ''};
 
-    public observable: Observable<Order> = this.subject.asObservable();
+    private subject: BehaviorSubject<orderItem> = new BehaviorSubject<orderItem>(this.order);
+
+    public observable: Observable<orderItem> = this.subject.asObservable();
+
+    public isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public loggedInObservable: Observable<boolean> = this.isLoggedIn.asObservable();
 
     constructor(private http: HttpClient){}
 

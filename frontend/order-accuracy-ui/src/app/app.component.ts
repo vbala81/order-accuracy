@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { OrderAPIService } from './OrderAPI.service';
 
 @Component({
   selector: 'app-root',
@@ -7,17 +8,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor (private router: Router) {}
+  isLoggedIn: boolean = false;
+  constructor (private router: Router, private api: OrderAPIService) {
+    this.api.loggedInObservable.subscribe(_lo => this.isLoggedIn=_lo);
+  }
   title = 'Order Accuracy Demo';
-  isLoggedIn = false;
+  
 
 
   goCustomerDashboard() {
     this.isLoggedIn = true;
+    this.api.isLoggedIn.next(this.isLoggedIn);
     this.router.navigate(['/dashboard/customer']);
   }
   goStoreDashboard() {
-    this.isLoggedIn = true;
+    this.api.isLoggedIn.next(this.isLoggedIn);
     this.router.navigate(['/dashboard/store']);
   }
 }

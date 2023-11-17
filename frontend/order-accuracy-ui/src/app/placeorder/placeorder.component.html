@@ -1,5 +1,7 @@
 
 
+<h3 *ngIf="!isOrderplaced">Welcome !!.. Here is our menu</h3>
+
 <ol class="list-group" *ngIf="!isOrderplaced">
     <li class="list-group-item d-flex justify-content-between align-items-start" *ngFor="let foodItems of foodItems">
       <div class="ms-2 me-auto">

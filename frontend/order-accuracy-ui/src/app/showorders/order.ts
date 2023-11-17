@@ -6,7 +6,8 @@ export interface Order {
     isready: boolean,
     orderstatus: String,
     s3imagelink: String
-    orderId: String
+    orderId: String,
+    customerId: String
 }
 
 export interface Results {
@@ -14,3 +15,4 @@ export interface Results {
     Count: number,
     ScannedCount: number
 }
+
