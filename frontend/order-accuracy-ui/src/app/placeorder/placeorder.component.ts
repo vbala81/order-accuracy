@@ -17,8 +17,8 @@ export class PlaceorderComponent {
   placedOrders:Order[] = [];
   isOrderplaced = false;
   customerorder: String = "";
-  order:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderissue:"",s3imagelink:''};
-  placedOrder:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderissue:"",s3imagelink:''};
+  order:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
+  placedOrder:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
   isLoggedIn = false;
   constructor (private api: OrderAPIService) {}
   ngOnInit() {

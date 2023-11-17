@@ -4,7 +4,7 @@ export interface Order {
     order: FoodItem[],
     orderdate: Date,
     isready: boolean,
-    orderissue: String,
+    orderstatus: String,
     s3imagelink: String
     orderId: String
 }

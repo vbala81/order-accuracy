@@ -14,7 +14,7 @@ exports.handler = async function (event, context) {
                 order: detail.order,
                 orderdate: detail.orderdate,
                 isready: detail.isready,
-                orderissue: detail.orderissue,
+                orderstatus: detail.orderstatus,
                 s3imagelink: ""
             },
         }

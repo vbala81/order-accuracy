@@ -5,6 +5,7 @@ import { Order, Results } from './order';
 import { OrderAPIService } from '../OrderAPI.service';
 import { orderDisplay } from './orderdisplay';
 import { interval } from 'rxjs';
+import awsmobile from 'src/aws-exports';
 
 
 @Component({
@@ -20,7 +21,23 @@ export class ShowordersComponent {
   returnorder: any
 
   
-  constructor (private api: OrderAPIService) {}
+  constructor (private api: OrderAPIService) {
+    this.api.observable.subscribe(_orders=> {
+      console.log("In the component")
+     // console.log(_orders);
+      //let o = this.orders.filter(o => o.orderId===_orders.orderId);
+      //console.log(_orders);
+      Object.assign(this.orders.filter(o => o.orderId===_orders.orderId),_orders);
+
+      this.orders.map(function(order) {
+         if(order.orderId===_orders.orderId)
+          Object.assign(order,_orders)
+      });
+
+      
+    })
+    
+  }
   ngOnInit() {
      
 
@@ -34,6 +51,11 @@ export class ShowordersComponent {
       this.getOrders();
 
 
+  }
+
+  ngOnDestroy(): void {
+    this.api.close();
+    //this.$messages.unsubscribe();
   }
 
 
@@ -60,13 +82,19 @@ export class ShowordersComponent {
   //     )
     this.api.listorders().subscribe(
       (results) => {
-        if(results.Items){
+        if(results.Items && results.Items.length > 0){
             this.message = "Orders..."
             this.orders = results.Items;
         }
 
       }
     );
+
+    this.api.connect(awsmobile.web_socket_url);
+
+    // Connecting to Web Socket URL.
+
+
 
   }
 }
