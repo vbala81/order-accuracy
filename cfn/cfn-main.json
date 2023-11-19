@@ -24,7 +24,7 @@
     },
     {
       "ParameterKey": "VolumeSizeInGB",
-      "ParameterValue": "10"
+      "ParameterValue": "5"
     }
   ]
   
