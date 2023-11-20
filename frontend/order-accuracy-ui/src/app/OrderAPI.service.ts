@@ -55,8 +55,7 @@ export class OrderAPIService {
           this.websocket.onclose = _ => console.log("Close")
           this.websocket.onmessage = message => {
             console.log(message.data);
-                //this.order.orderId = JSON.parse(message.data).orderId;
-                console.log(message.data);
+               
                 let wsmessage = JSON.parse(message.data);
                 if(wsmessage.orderId) {
                   Object.assign(this.order,JSON.parse(message.data));
