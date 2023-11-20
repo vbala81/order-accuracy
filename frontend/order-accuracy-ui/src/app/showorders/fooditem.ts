@@ -16,6 +16,14 @@ export interface orderItem {
 
 }
 
+
+export interface customerOrder {
+    oid:String,
+    omessage: String,
+    items:String[]
+
+}
+
 export const FOODITEMS: FoodItem[] = [
     {
         name: "Burger", items: [{ name: "Ciabatta Bun", isadded: false, optional: true },
@@ -26,5 +34,8 @@ export const FOODITEMS: FoodItem[] = [
         { name: "Cheese", isadded: false, optional: false }],
         description: " Juicy Chicken Burger with bacon slices , lettue, tomato and Cheese"
     },
-    { name: "Fries", items: [{ name: "Cheese", isadded: false, optional: false }], description: "Cripsy fries" }
+    { name: "Fries", items: [
+        { name: "fries", isadded: false, optional: true },
+        { name: "Cheese", isadded: false, optional: false }
+    ], description: "Cripsy fries" }
 ];

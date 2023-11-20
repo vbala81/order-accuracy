@@ -3,8 +3,9 @@
 
   <nav class="navbar navbar-light bg-light bg-body-tertiary">
     <div class="container-fluid">
-      <h3 class="col-2 text-center"  style="color: #0000c9;"><b>{{title}}</b></h3>
+      <h4 class="col-lg-4 text-center"  style="color: #0000c9;"><b>{{title}}</b></h4>
       <form class="d-flex" role="search" *ngIf="isLoggedIn">
+        <span class="navbar-text me-2" type="search" placeholder="Search" aria-label="Search"> <b>{{loginDetails.name}} </b> </span>
         <a class="btn btn-outline-primary" href="/" type="submit">Home</a>
       </form>
     </div>

@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { PlaceorderComponent } from './placeorder/placeorder.component';
 import { ShowordersComponent } from './showorders/showorders.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CustomerorderComponent } from './customerorder/customerorder.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlaceorderComponent,
-    ShowordersComponent
+    ShowordersComponent,
+    CustomerorderComponent
   ],
   imports: [
     BrowserModule,

@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
-import { FOODITEMS, FoodItem } from '../showorders/fooditem';
+import { FOODITEMS, FoodItem, Item } from '../showorders/fooditem';
 import { Order } from '../showorders/order';
 import { Observable, of } from 'rxjs';
-//import { API } from 'aws-amplify';
-//import {APIService, CreateORDERSInput} from '../API.service'
 import { OrderAPIService } from '../OrderAPI.service';
-//import {CreateORDERS} from "./graphql/mutations.graphql"
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-placeorder',
@@ -19,11 +17,15 @@ export class PlaceorderComponent {
   customerorder: String = "";
   order:Order = {customerId:'',orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
   placedOrder:Order = {customerId:'',orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
-  isLoggedIn = false;
-  constructor (private api: OrderAPIService) {}
+  constructor (private api: OrderAPIService, private router: Router) {}
   ngOnInit() {
       const foodItems = this.getFoodItems().subscribe(food => this.foodItems = food);
-      this.api.isLoggedIn.next(true);
+
+      Promise.resolve().then( () => {
+        this.api.logindetails.next({name:"Dave Bob",id:"7077"})
+        this.api.isLoggedIn.next(true);
+        
+      })
       
   }
 
@@ -40,16 +42,13 @@ export class PlaceorderComponent {
     console.log(this.customerorder);
 
   }
+  removeItem(orderindex: number, itemindex: number, item:Item) {
+    this.order.order[orderindex].items = this.order.order[orderindex].items.filter(it=> it!==item)
+    
+  }
 
   async placeOrder() {
-    // var orderInput: CreateORDERSInput = {};
-    // orderInput.isready = this.order.isready;
-    // orderInput.order = JSON.stringify(this.order.order);
-    // orderInput.orderdate = this.order.orderdate.toISOString();
-    // console.log(orderInput);
-
-    //   let result = await this.api.CreateORDERS(orderInput)
-
+    this.api.logindetailObservable.subscribe(_o => this.order.customerId = _o.id);
     this.api.insertOrder(this.order).subscribe(
       {
         next: (order ) => { 
@@ -60,7 +59,9 @@ export class PlaceorderComponent {
         error: (e) => {
             console.log(e);
         } ,
-        complete: () => console.info('complete') 
+        complete: () => {
+            this.router.navigate(["/dashboard/customer/" + this.order.customerId])
+        }
     }
     )
     
