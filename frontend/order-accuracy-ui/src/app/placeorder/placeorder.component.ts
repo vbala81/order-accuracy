@@ -4,6 +4,7 @@ import { Order } from '../showorders/order';
 import { Observable, of } from 'rxjs';
 import { OrderAPIService } from '../OrderAPI.service';
 import { Router } from '@angular/router';
+import { LoginDetails } from '../logindetails';
 
 @Component({
   selector: 'app-placeorder',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 export class PlaceorderComponent {
   foodItems:FoodItem[] = []
   placedOrders:Order[] = [];
+  loginDetails:LoginDetails = {id:'',name:''}
   isOrderplaced = false;
   customerorder: String = "";
   order:Order = {customerId:'',orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
@@ -23,6 +25,7 @@ export class PlaceorderComponent {
 
       Promise.resolve().then( () => {
         this.api.logindetails.next({name:"Dave Bob",id:"7077"})
+        this.api.logindetails.subscribe(_d => this.loginDetails = _d);
         this.api.isLoggedIn.next(true);
         
       })
