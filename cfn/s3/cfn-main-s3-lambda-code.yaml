@@ -1,0 +1,297 @@
+##########################################################
+# Version History : v1: #  Authored by Bala to demonstrate reusable s3 bucket creation
+#                   v2: #  Authored by Nikhil - Added Encryption Handling
+############################################################
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Project Mighty S3 Bucket for Lambda Code
+Parameters:
+  ClientName:
+    Type: String
+    Description: Name of the Client. Abbreviated client name (e.g. aabg) in lower case letters - this must be all one word alphanumeric
+    Default: kinetic
+    MinLength: 1
+    MaxLength: 20
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers
+  ProductName:
+    Type: String
+    Description: Name of the Product (e.g. artemis|kinetic) in lower case letters - this must be all one word alphanumeric
+    Default: '8675309'
+    MinLength: 1
+    MaxLength: 10
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers
+  DataRetentionRequirement:
+    Type: String
+    Description: How long does data need to be kept in this bucket before being removed?
+    Default: '2555'
+    AllowedPattern: ^[0-9]*$
+    ConstraintDescription: must only contain numbers
+  ModuleName:
+    Type: String
+    Description: Please enter the name of the module in lower case letters (e.g. kernel)
+  ModuleVersion:
+    Type: String
+    Description: Name of the module in lower case letters (e.g. kernel)
+  BucketVersioning:
+    Type: String
+    Description: Turn versioning on for the bucket
+    Default: false
+    AllowedValues: [true, false]
+  DataAthenaQuerying:
+    Type: String
+    Description: Enable Athena Querying on S3 Data Bucket Access Logs
+    Default: false
+    AllowedValues: [true, false]
+  BucketSecurity:
+    Default: '1'
+    Type: String
+    Description: Security level of bucket
+    ConstraintDescription: Must reflect the level of security needed 1, 2, 3 (3 is max level)
+    AllowedValues:
+      - '1'
+      - '2'
+      - '3'
+  EncryptionType:
+    Type: String 
+    Description: Server-side encryption with Amazon S3-managed keys (SSE-S3) or AWS KMS-managed keys (SSE-KMS)
+    Default: 'SSE-S3'
+    AllowedValues: 
+      - 'SSE-S3'
+      - 'SSE-KMS'
+  KMSMasterKeyID:
+    Type: String 
+    Description: KMS key ID to use for the default encryption (Leave blank if using SSE-S3)
+    Default: ''       
+          
+Conditions:
+  AthenaEnabled:
+    !Equals [true, !Ref DataAthenaQuerying]
+  Versioning:
+    !Equals [true, !Ref BucketVersioning]
+  MaxSecurityEnabled:
+    !Equals ['3', !Ref BucketSecurity]
+  KMSKeyProvided:
+    !Not [!Equals ["", !Ref KMSMasterKeyID]]
+  EncryptionCheck:
+    !Equals ['SSE-S3', !Ref EncryptionType]
+
+Resources:
+  DataBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: 
+        Fn::Join:
+          - '-'
+          -
+            - !Ref ClientName
+            - !Ref ProductName      
+            - !Ref "AWS::Region"            
+            - !Ref ModuleName
+            - !Ref ModuleVersion            
+      AccessControl: Private
+      Tags:
+        - Key:   Project
+          Value: !Ref ClientName
+        - Key:   Product
+          Value: !Ref ProductName
+        - Key:   Module
+          Value: !Ref ModuleName
+        - Key:   ModuleVersion
+          Value: !Ref ModuleVersion
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: !If [EncryptionCheck, AES256, 'aws:kms']
+              KMSMasterKeyID: !If 
+              - KMSKeyProvided
+              - !Ref KMSMasterKeyID
+              - !Ref AWS::NoValue
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: !Ref DataRetentionRequirement
+            Id: DataBucketLifecycle
+            Status: Enabled
+            Transitions:
+              - # Move all objects to S3 Intelligent Tiering after 30 days
+                StorageClass: INTELLIGENT_TIERING # TODO: Update to Intelligent tiering once Cloud formation catches up
+                TransitionInDays: 30
+              - # Move all objects to Glacier after 180 days
+                StorageClass: GLACIER
+                TransitionInDays: 180
+      MetricsConfigurations:
+        - Id:
+            Fn::Join:
+              - '-'
+              -
+                - !Ref ClientName
+                - !Ref ProductName      
+                - !Ref "AWS::Region"            
+                - !Ref ModuleName
+                - !Ref ModuleVersion   
+                - 'metric'
+          Prefix: !Ref ClientName
+      VersioningConfiguration:
+        Status: !If [Versioning, Enabled, Suspended]
+      PublicAccessBlockConfiguration: # Reference https://aws.amazon.com/blogs/aws/amazon-s3-block-public-access-another-layer-of-protection-for-your-accounts-and-buckets/
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  DataBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: DataBucket
+      PolicyDocument:
+        Statement:
+          -
+            Sid: SecureTransportForAllActions # Requires that all objects utilize secure transport
+            Action:
+              - "s3:*"
+            Effect: "Deny"
+            Resource:
+              - Fn::Join:
+                - ""
+                -
+                  - !GetAtt  DataBucket.Arn
+                  - "/*"
+            Principal: "*"
+            Condition:
+              Bool:
+                aws:SecureTransport: "false"
+          -
+            Sid: DenyPublicReadACL # Deny public updating of ACL
+            Action:
+              - "s3:PutObject"
+              - "s3:PutObjectAcl"
+            Condition:
+              StringEquals:
+                s3:x-amz-acl:
+                  - "public-read"
+                  - "public-read-write"
+                  - "authenticated-read"
+            Effect: "Deny"
+            Principal: "*"
+            Resource:
+              Fn::Join:
+              - ""
+              -
+                - "arn:"
+                - Ref: "AWS::Partition"
+                - ":s3:::"
+                -
+                  Ref: "DataBucket"
+                - "/*"
+          -
+            Sid: DenyPublicReadGrant
+            Action:
+              - "s3:PutObject"
+              - "s3:PutObjectAcl"
+            Condition:
+              StringLike:
+                s3:x-amz-grant-read:
+                  - "*http://acs.amazonaws.com/groups/global/AllUsers*"
+                  - "*http://acs.amazonaws.com/groups/global/AuthenticatedUsers*"
+            Effect: "Deny"
+            Principal: "*"
+            Resource:
+              Fn::Join:
+              - ""
+              -
+                - "arn:"
+                - Ref: "AWS::Partition"
+                - ":s3:::"
+                -
+                  Ref: "DataBucket"
+                - "/*"
+          -
+            Sid: DenyPublicListACL
+            Action:
+              - "s3:PutBucketAcl"
+            Condition:
+              StringEquals:
+                s3:x-amz-acl:
+                  - "public-read"
+                  - "public-read-write"
+                  - "authenticated-read"
+            Effect: "Deny"
+            Principal: "*"
+            Resource:
+              - Fn::Join:
+                - ""
+                -
+                  - "arn:"
+                  - Ref: "AWS::Partition"
+                  - ":s3:::"
+                  -
+                    Ref: "DataBucket"
+                  - "/*"
+              - Fn::Join:
+                - ""
+                -
+                  - "arn:"
+                  - Ref: "AWS::Partition"
+                  - ":s3:::"
+                  -
+                    Ref: "DataBucket"
+          -
+            Sid: DenyPublicListGrant
+            Action:
+              - "s3:PutBucketAcl"
+            Condition:
+              StringLike:
+                s3:x-amz-grant-read:
+                  - "*http://acs.amazonaws.com/groups/global/AllUsers*"
+                  - "*http://acs.amazonaws.com/groups/global/AuthenticatedUsers*"
+            Effect: "Deny"
+            Principal: "*"
+            Resource:
+              - Fn::Join:
+                - ""
+                -
+                  - "arn:"
+                  - Ref: "AWS::Partition"
+                  - ":s3:::"
+                  -
+                    Ref: "DataBucket"
+                  - "/*"
+              - Fn::Join:
+                - ""
+                -
+                  - "arn:"
+                  - Ref: "AWS::Partition"
+                  - ":s3:::"
+                  -
+                    Ref: "DataBucket"
+          -
+            Sid: DenyAnonymousRequestsP
+
+            Action:
+              - "s3:ListBucket"
+            Condition:
+              StringEqualsIfExists:
+                aws:principaltype: "Anonymous"
+            Effect: "Deny"
+            Principal: "*"
+            Resource:
+              - Fn::Join:
+                - ""
+                -
+                  - "arn:"
+                  - Ref: "AWS::Partition"
+                  - ":s3:::"
+                  -
+                    Ref: "DataBucket"
+                  - "/*"
+              - Fn::Join:
+                - ""
+                -
+                  - "arn:"
+                  - Ref: "AWS::Partition"
+                  - ":s3:::"
+                  -
+                    Ref: "DataBucket"
+Outputs:
+  DataBucket:
+    Value: !Ref DataBucket

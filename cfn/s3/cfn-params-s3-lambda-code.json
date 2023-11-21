@@ -1,0 +1,39 @@
+[
+    {
+      "ParameterKey": "ClientName",
+      "ParameterValue": "aabg"
+    },
+    {
+      "ParameterKey": "ProductName",
+      "ParameterValue": "mighty"
+    },
+    {
+      "ParameterKey": "ModuleName",
+      "ParameterValue": "s3-lambda-code"
+    },
+    {
+      "ParameterKey": "ModuleVersion",
+      "ParameterValue": "v1"
+    },
+    {
+      "ParameterKey": "BucketVersioning",
+      "ParameterValue": "false"
+    },
+    {
+      "ParameterKey": "DataAthenaQuerying",
+      "ParameterValue": "false"
+    },
+    {
+      "ParameterKey": "BucketSecurity",
+      "ParameterValue": "1"
+    },
+    {
+      "ParameterKey": "EncryptionType",
+      "ParameterValue": "SSE-S3"
+    },
+    {
+      "ParameterKey": "KMSMasterKeyID",
+      "ParameterValue": ""
+    }
+  ]
+  

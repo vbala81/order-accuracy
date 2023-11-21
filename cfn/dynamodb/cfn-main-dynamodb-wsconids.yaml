@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Project Mighty DynamoDB Table
+Description: Project Mighty DynamoDB Table - WSConIds
 Parameters:
 ##### REQUIRED PARAMETERS #####
   ClientName:

@@ -9,7 +9,7 @@
     },
     {
         "ParameterKey": "ModuleName",
-        "ParameterValue": "byom"
+        "ParameterValue": "dynamodb"
     },
     {
         "ParameterKey": "ModuleVersion",
@@ -17,7 +17,7 @@
     },
     {
         "ParameterKey": "TableName",
-        "ParameterValue": "order-accuracy"
+        "ParameterValue": "WSConIds"
     },
     {
         "ParameterKey": "PrimaryKeyName",
@@ -45,6 +45,6 @@
     },
     {
         "ParameterKey": "AutoScalingIAMRoleName",
-        "ParameterValue": "OA-Autoscaling-Role"
+        "ParameterValue": "WSConIds-Autoscaling-Role"
     }
 ]

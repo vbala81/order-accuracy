@@ -1,0 +1,38 @@
+[
+    {
+        "ParameterKey": "ClientName",
+        "ParameterValue": "aabg"
+    },
+    {
+        "ParameterKey": "ProductName",
+        "ParameterValue": "mighty"
+    },
+    {
+        "ParameterKey": "ModuleName",
+        "ParameterValue": "dynamodb"
+    },
+    {
+        "ParameterKey": "ModuleVersion",
+        "ParameterValue": "v1"
+    },
+    {
+        "ParameterKey": "TableName",
+        "ParameterValue": "orders"
+    },
+    {
+        "ParameterKey": "PrimaryKeyName",
+        "ParameterValue": "Id"
+    },
+    {
+        "ParameterKey": "PrimaryKeyType",
+        "ParameterValue": "S"
+    },
+    {
+        "ParameterKey": "TableClass",
+        "ParameterValue": "STANDARD"
+    },
+    {
+        "ParameterKey": "AutoScalingIAMRoleName",
+        "ParameterValue": "Orders-Autoscaling-Role"
+    }
+]

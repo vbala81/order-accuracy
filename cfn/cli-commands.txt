@@ -1,0 +1,11 @@
+S3 (ORDER ACCURACY CODE)
+aws cloudformation create-stack --stack-name project-mighty-s3-main-stack --template-body file://cfn-main-s3.yaml --parameters file://cfn-params-s3.json --capabilities CAPABILITY_NAMED_IAM
+
+S3 (LAMBDA CODE)
+aws cloudformation create-stack --stack-name project-mighty-s3-lambda-code-stack --template-body file://cfn-main-s3-lambda-code.yaml --parameters file://cfn-params-s3-lambda-code.json --capabilities CAPABILITY_NAMED_IAM
+
+DynamoDB (ORDERS TABLE)
+aws cloudformation create-stack --stack-name project-mighty-dynamodb-orders-stack --template-body file://cfn-main-dynamodb-orders.yaml --parameters file://cfn-params-dynamodb-orders.json --capabilities CAPABILITY_NAMED_IAM
+
+DynamoDB (WSConIds TABLE)
+aws cloudformation create-stack --stack-name project-mighty-dynamodb-wsconids-stack --template-body file://cfn-main-dynamodb-wsconids.yaml --parameters file://cfn-params-dynamodb-wsconids.json --capabilities CAPABILITY_NAMED_IAM
