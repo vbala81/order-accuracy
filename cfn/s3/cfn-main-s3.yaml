@@ -63,6 +63,10 @@ Parameters:
     Type: String 
     Description: KMS key ID to use for the default encryption (Leave blank if using SSE-S3)
     Default: ''       
+  LambdaFunctionToTrigger:
+    Type: String
+    Description: Name of the Lambda function which will be triggered for S3 object uploads
+    Default: aabg-mighty-us-east-1-lambda-find-label
           
 Conditions:
   AthenaEnabled:
@@ -150,6 +154,10 @@ Resources:
               - GET
               - HEAD
               - DELETE
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Function: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionToTrigger}'
+            Event: 's3:ObjectCreated:*'
   DataBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
