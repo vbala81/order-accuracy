@@ -41,7 +41,7 @@ Parameters:
     Type: String
     Description: Name of WSConIds table
     Default: aabg-mighty-us-east-1-dynamodb-WSConIds
-  S3BucketName:
+  S3BucketToInvokeLambda:
     Type: String
     Description: Bucket name which will invoke this lambda
     Default: aabg-mighty-us-east-1-s3-v1
@@ -142,4 +142,4 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref LambdaFunction
       Principal: s3.amazonaws.com
-      SourceArn: !Join ['', ['arn:aws:s3:::', !Ref S3BucketName]]
+      SourceArn: !Join ['', ['arn:aws:s3:::', !Ref S3BucketToInvokeLambda]]
