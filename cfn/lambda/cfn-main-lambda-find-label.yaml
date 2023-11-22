@@ -1,0 +1,145 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Project Might Lambda Function - Find Label
+
+Parameters:
+  ClientName:
+    Type: String
+    Description: --REQUIRED-- Name of the Client. Abbreviated client name (e.g. aabg) in lower case letters - this must be all one word alphanumeric
+    Default: aabg
+    MinLength: 1
+    MaxLength: 20
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers
+  ProductName:
+    Type: String
+    Description: --REQUIRED-- Name of the Product (e.g. artemis|kinetic) in lower case letters - this must be all one word alphanumeric
+    Default: '8675309'
+    MinLength: 1
+    MaxLength: 10
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    ConstraintDescription: must only contain letters (uppercase and lowercase) and numbers  
+  ModuleName:
+    Type: String
+    Description: --REQUIRED--  Please enter the name of the module in lower case letters (e.g. kernel)
+  ModuleVersion:
+    Type: String
+    Description: --REQUIRED-- Name of the version (e.g. v1-0-0)
+  LambdaFunctionName:
+    Type: String
+    Description: Lambda Function Name
+  S3BucketName:
+    Type: String
+    Description: S3 Bucket to Upload Lambda Code
+  LambdaExectionRoleName:
+    Type: String
+    Description: Lambda IAM Role
+  DynamoDBOrdersTableName:
+    Type: String
+    Description: Name of Orders table
+    Default: aabg-mighty-us-east-1-dynamodb-orders
+  DynamoDBWSConIdsTableName:
+    Type: String
+    Description: Name of WSConIds table
+    Default: aabg-mighty-us-east-1-dynamodb-WSConIds
+  S3BucketName:
+    Type: String
+    Description: Bucket name which will invoke this lambda
+    Default: aabg-mighty-us-east-1-s3-v1
+
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Join ["-", [!Ref ClientName, !Ref ProductName, !Ref AWS::Region, !Ref ModuleName, !Ref LambdaFunctionName]]
+      Handler: findlabelsfromImage.handler
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: lambda_function_findlabels.zip
+      Runtime: nodejs16.x
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref LambdaExectionRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: AWSLambdaLogsPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: "*"
+      - PolicyName: AWSLambdaS3Permissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:GetObject
+            Resource:
+            - !Join ['', ['arn:aws:s3:::', !Ref S3BucketName]]
+            - !Join ['', ['arn:aws:s3:::', !Ref S3BucketName, '/*']]
+      - PolicyName: AWSLambdaRekognitionPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - rekognition:*
+            Resource: "*"
+      - PolicyName: AWSLambdaDynamoDBPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:DeleteItem
+            Resource:
+            - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBOrdersTableName}'
+            - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBWSConIdsTableName}'
+      - PolicyName: AWSLambdaAGWPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - execute-api:*
+            Resource:
+            - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*'
+      - PolicyName: AWSLambdaInvokePermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - lambda:InvokeFunction
+            - lambda:InvokeAsync
+            Resource:
+            - '*'
+
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !Join ['', ['arn:aws:s3:::', !Ref S3BucketName]]

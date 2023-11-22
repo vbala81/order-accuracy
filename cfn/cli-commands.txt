@@ -9,3 +9,6 @@ aws cloudformation create-stack --stack-name project-mighty-dynamodb-orders-stac
 
 DynamoDB (WSConIds TABLE)
 aws cloudformation create-stack --stack-name project-mighty-dynamodb-wsconids-stack --template-body file://cfn-main-dynamodb-wsconids.yaml --parameters file://cfn-params-dynamodb-wsconids.json --capabilities CAPABILITY_NAMED_IAM
+
+Lambda (FindLabel FUNCTION)
+aws cloudformation create-stack --stack-name project-mighty-lambda-find-label-stack --template-body file://cfn-main-lambda-find-label.yaml --parameters file://cfn-params-lambda-find-label.json --capabilities CAPABILITY_NAMED_IAM
