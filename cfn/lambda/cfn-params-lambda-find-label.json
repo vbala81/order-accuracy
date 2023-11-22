@@ -1,0 +1,38 @@
+[
+    {
+        "ParameterKey": "ClientName",
+        "ParameterValue": "aabg"
+    },
+    {
+        "ParameterKey": "ProductName",
+        "ParameterValue": "mighty"
+    },
+    {
+        "ParameterKey": "ModuleName",
+        "ParameterValue": "lambda"
+    },
+    {
+        "ParameterKey": "ModuleVersion",
+        "ParameterValue": "v1"
+    },
+    {
+      "ParameterKey": "LambdaFunctionName",
+      "ParameterValue": "find-label"
+    },
+    {
+      "ParameterKey": "S3BucketName",
+      "ParameterValue": "aabg-mighty-us-east-1-s3-lambda-code-v1"
+    },
+    {
+      "ParameterKey": "LambdaExectionRoleName",
+      "ParameterValue": "aabg-mighty-us-east-1-lambda-findlabel-role"
+    },
+    {
+      "ParameterKey": "DynamoDBOrdersTableName",
+      "ParameterValue": "aabg-mighty-us-east-1-dynamodb-orders"
+    },
+    {
+      "ParameterKey": "DynamoDBWSConIdsTableName",
+      "ParameterValue": "aabg-mighty-us-east-1-dynamodb-WSConIds"
+    }
+  ]
