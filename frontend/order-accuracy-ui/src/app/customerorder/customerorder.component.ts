@@ -17,6 +17,7 @@ export class CustomerorderComponent {
     console.log(this.customerId);
 
     this.api.customerObservable.subscribe(_cust => {
+      console.log(_cust);
       this.placedOrders.map((_order) => {
         if (_order.orderId === _cust.oid) {
           _order.orderstatus = _cust.omessage

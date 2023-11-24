@@ -1,7 +1,40 @@
-<h3>{{message}}</h3>
-
+<div class="example-container">
+  <h2>{{message}}</h2>
+  <mat-grid-list cols="2">
+    <mat-grid-tile *ngFor="let order of orders">
+      <mat-card class="example-card" [ngClass]="{'selected' : order.orderstatus!=''}">
+        <mat-card-header>
+          <mat-card-title> Order Id :: {{order.orderId}} 
+          </mat-card-title>
+          <mat-card-subtitle>
+            <span class="badge bg-primary rounded-pill">{{order.orderdate}}</span>
+          </mat-card-subtitle>
+          <mat-card-subtitle >
+            <mat-chip-option *ngIf="order.orderstatus" color="accent" selected>{{order.orderstatus}}</mat-chip-option>
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list *ngFor="let items of order.order">
+            <div mat-subheader>{{items.name}}</div>
+            <mat-list-item  *ngFor="let item of items.items" >
+              <mat-icon  matListItemIcon> {{item.isadded ? 'check' : 'navigate_next'}}</mat-icon>
+              <div [ngClass]="{'success' : item.isadded}"  matListItemTitle>{{item.name}}</div>
+              <!-- <div matListItemLine>{{folder.updated | date}}</div> -->
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </mat-list>
+        </mat-card-content>
+      
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+<!-- 
   <ol class="list-group list-group-numbered">
     <li class="list-group-item d-flex justify-content-between align-items-start" *ngFor="let order of orders" [ngClass]="{'list-group-item-secondary' : order.orderstatus!=''}">
+
+
+
       <div class="ms-2 me-auto">
         <div class="fw-bold">Order Id :: {{order.orderId}}       </div>
          <li  *ngFor="let items of order.order">
@@ -28,7 +61,4 @@
       <span class="badge bg-primary rounded-pill">{{order.orderdate}}</span>
     </li>
     
-  </ol>
-
-
-  
+  </ol> -->

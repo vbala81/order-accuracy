@@ -1,0 +1,22 @@
+.example-container {
+    margin-left: 100px;
+  }
+
+  .example-card {
+    width: 300px;
+    height: 200px
+  }
+  
+  .mat-grid-tile-content {
+    align-items: start
+  }
+
+  .Burger {
+    background-image:url("../../assets/burger.png");
+    background-size : cover;
+  }
+
+  .Fries {
+    background-image:url("../../assets/fries.png");
+    background-size : cover;
+  }

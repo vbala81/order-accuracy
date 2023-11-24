@@ -1,0 +1,28 @@
+.example-container {
+    margin-left: 100px;
+  }
+
+  .example-card {
+    width: 95%;
+    height: 100%;
+    
+  }
+  
+  .selected {
+    background-color: #d3d4d5;
+  }
+
+  .success {
+    color: green;
+    
+  }
+
+  .Burger {
+    background-image:url("../../assets/burger.png");
+    background-size : cover;
+  }
+
+  .Fries {
+    background-image:url("../../assets/fries.png");
+    background-size : cover;
+  }

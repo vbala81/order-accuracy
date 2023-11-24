@@ -1,38 +1,32 @@
-<h3 > Your Order..</h3>
-  <!-- <ol class="list-group list-group-numbered">
-    <li class="list-group-item d-flex justify-content-between align-items-start" *ngFor="let order of placedOrders">
-      <div class="ms-2 me-auto">
-        <div class="fw-bold">Order Id :: {{order.orderId}}</div>
-         <li  *ngFor="let items of order.order">
-          {{items.name}}
-       </li> 
-      </div>
-      <span class="badge bg-primary rounded-pill">{{order.orderdate}}</span>
-    </li>
-    
-  </ol> -->
 
-  <ol class="list-group list-group-numbered">
-    <li class="list-group-item d-flex justify-content-between align-items-start" *ngFor="let order of placedOrders" 
-    [ngClass]="{'list-group-item-secondary' : order.orderstatus!='','list-group-item-danger' : (order.orderstatus!='' && order.orderstatus.includes('missing')),
-    'list-group-item-success' : (order.orderstatus!='' && order.orderstatus.includes('completed'))}">
-      <div class="ms-2 me-auto">
-        <div class="fw-bold">Order Id :: {{order.orderId}}       </div>
-         <li  *ngFor="let items of order.order">
-          {{items.name}}
-          <div class="ms-2 me-auto">
-          <!-- <li  lass="list-group-item d-flex justify-content-between align-items-start" *ngFor="let item of items.items">
-            <div class="ms-2 me-auto" [ngClass]="{'list-group-item-success' : item.isadded}">
-              <div class="fw-bold">{{item.name}}</div>
-          </div>
+<div class="example-container">
+<h2 > Your Order..</h2>
+
+  
+
+  <mat-list *ngFor="let order of placedOrders ;let orderindex = index "  class="simple-list"
+  [ngClass]="{'list' : (order.orderstatus && order.orderstatus.includes('missing')), 'list-success': (order.orderstatus && order.orderstatus.includes('completed'))}">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title><b> Order id :: {{order.orderId}}</b></mat-card-title>
+        <mat-card-subtitle>
+         </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list-item  *ngFor="let item of order.order let itemindex=index">
+          <div  matListItemTitle> {{item.name}}</div>
+          <mat-icon  matListItemIcon > navigate_next</mat-icon>
           
-        </li> -->
-      </div>
-       </li> 
-      </div>
-      <span class="badge bg-warning rounded-pill">{{order.orderstatus}}</span>
-      <span class="badge bg-primary rounded-pill">{{order.orderdate}}</span>
-    </li>
-    
-  </ol>
-
+        </mat-list-item>
+      </mat-card-content>
+      <mat-card-actions align="end"> 
+        <button mat-button>{{order.orderdate}}</button>
+        <button mat-button>
+          <mat-chip-option *ngIf="order.orderstatus && !order.orderstatus.includes('missing')" color="accent" selected>{{order.orderstatus}}</mat-chip-option>
+          <mat-chip-option *ngIf="order.orderstatus && order.orderstatus.includes('missing')" color="warn" selected>{{order.orderstatus}}</mat-chip-option>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    <mat-divider></mat-divider>
+  </mat-list>
+</div>

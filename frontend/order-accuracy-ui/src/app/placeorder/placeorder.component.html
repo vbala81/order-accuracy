@@ -1,8 +1,68 @@
+    <!-- <div class="col-lg-12" *ngIf="order.order[0] && !isOrderplaced">
+      <h3> Your Order....</h3>
+      <ol class="list-group list-group-numbered" *ngIf="!isOrderplaced">
+        <li class="list-group-item d-flex justify-content-between align-items-start"
+          *ngFor="let items of order.order let orderindex = index">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">{{items.name}}</div>
+        <li lass="list-group-item d-flex justify-content-between align-items-start"
+          *ngFor="let item of items.items let itemindex=index">
+          <div class="ms-2 me-auto">
+            <div class="">{{item.name}}
+              <button *ngIf="!item.optional" class="btn" (click)="removeItem(orderindex,itemindex,item)">x</button>
+            </div>
+          </div>
+        </li>
+
+    </div>
+    </li>
+    </ol>
+    <button type="button" class="btn btn-primary" (click)="placeOrder()"> Place the order</button>
+    </div> -->
+
+   
+
+
+    <div class="example-container">
+      <p>
+      <h2>Welcome !!.. Here is our menu</h2>
+      <div class="end-0">
+        <a href="/dashboard/customer/{{loginDetails.id}}">Your orders...</a>
+      </div>
+      <mat-grid-list cols="4" rowHeight="1:1">
+        <mat-grid-tile *ngFor="let foodItems of foodItems">
+          <mat-card class="example-card">
+            <mat-card-header>
+              <div mat-card-avatar class="example-header-image {{foodItems.name}}"></div>
+              <mat-card-title> {{foodItems.name}} </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p> {{foodItems.description}}</p>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <button mat-fab color="primary" (click)="addItemtoOrder(foodItems)">
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add">
+                </mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+       </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+   
+   
+ 
 
 
 
 
-<h3 *ngIf="!isOrderplaced">Welcome !!.. Here is our menu 
+
+
+
+
+
+
+<!-- <h3 *ngIf="!isOrderplaced">Welcome !!.. Here is our menu 
   
 </h3>
 <div class="end-0">
@@ -19,16 +79,16 @@
       </div>
       <button type="button" (click)="addItemtoOrder(foodItems)" class="btn btn-light">+</button>
     </li>
-  </ol>
+  </ol> -->
 
 
-  <!-- <div class="col-lg-6" *ngIf="order.order[0] && !isOrderplaced">
+<!-- <div class="col-lg-6" *ngIf="order.order[0] && !isOrderplaced">
     <h3>Your order</h3>
     <div class="fw-bold">{{customerorder}}</div>
     <button type="button"  class="btn btn-primary" (click)="placeOrder()"> Place the order</button>
 
 </div> -->
-<div class="col-lg-12" *ngIf="order.order[0] && !isOrderplaced">
+<!-- <div class="col-lg-12" *ngIf="order.order[0] && !isOrderplaced">
 <h3> Your Order....</h3>
 
 <ol class="list-group list-group-numbered" *ngIf="!isOrderplaced">
@@ -62,6 +122,4 @@
       <span class="badge bg-primary rounded-pill">{{order.orderdate}}</span>
     </li>
     
-  </ol>
-  
-  
+  </ol> -->

@@ -1,0 +1,20 @@
+.example-container {
+    margin-left: 100px;
+  }
+
+  .simple-list
+  {
+    width: 70%;
+  }
+  .list > * {
+    color: red;
+  }
+  .list-success > * {
+    color: green
+  }
+
+  .red {
+    color: red ;
+  }
+
+ 

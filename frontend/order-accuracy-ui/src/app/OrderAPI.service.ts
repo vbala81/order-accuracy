@@ -14,11 +14,11 @@ export class OrderAPIService {
 
     private websocket: WebSocket | undefined;
 
-    //order:Order = {orderId:'', order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
-    order:orderItem = {orderId:'',name:'',item: ''};
+    order:Order = {orderId:'', customerId:'',order: [], orderdate: new Date(), isready: false, orderstatus:"",s3imagelink:''};
+    orderItem:orderItem = {orderId:'',name:'',item: ''};
     custOrder : customerOrder = {oid:'',omessage:'',items:[]};
 
-    private subject: BehaviorSubject<orderItem> = new BehaviorSubject<orderItem>(this.order);
+    private subject: BehaviorSubject<orderItem> = new BehaviorSubject<orderItem>(this.orderItem);
     public observable: Observable<orderItem> = this.subject.asObservable();
 
     private customerSubject: BehaviorSubject<customerOrder> = new BehaviorSubject<customerOrder>(this.custOrder);
@@ -30,6 +30,9 @@ export class OrderAPIService {
 
     public logindetails: BehaviorSubject<LoginDetails> = new BehaviorSubject<LoginDetails>({name:'',id:''});
     public logindetailObservable: Observable<LoginDetails> = this.logindetails.asObservable();
+
+    public orderPlace: BehaviorSubject<Order> = new BehaviorSubject<Order>(this.order);
+    public orderPlaceObservable: Observable<Order> = this.orderPlace.asObservable();
 
 
     constructor(private http: HttpClient){}
@@ -58,9 +61,9 @@ export class OrderAPIService {
                
                 let wsmessage = JSON.parse(message.data);
                 if(wsmessage.orderId) {
-                  Object.assign(this.order,JSON.parse(message.data));
-                  this.subject.next(this.order);
-                  console.log(this.order);
+                  Object.assign(this.orderItem,JSON.parse(message.data));
+                  this.subject.next(this.orderItem);
+                  console.log(this.orderItem);
 
                 } else {
                   Object.assign(this.custOrder, wsmessage);

@@ -6,10 +6,13 @@ import { OrderAPIService } from '../OrderAPI.service';
 import { Router } from '@angular/router';
 import { LoginDetails } from '../logindetails';
 
+
+
+
 @Component({
   selector: 'app-placeorder',
   templateUrl: './placeorder.component.html',
-  styleUrls: ['./placeorder.component.css']
+  styleUrls: ['./placeorder.component.css'],
 })
 export class PlaceorderComponent {
   foodItems:FoodItem[] = []
@@ -41,10 +44,11 @@ export class PlaceorderComponent {
   addItemtoOrder(item: FoodItem) {
     console.log(item);
     this.order.order.push(item);
-    this.customerorder = this.order.order.map((o)=>o.name).join(",");
-    console.log(this.customerorder);
+    this.api.orderPlace.next(this.order);
+    
 
   }
+
   removeItem(orderindex: number, itemindex: number, item:Item) {
     this.order.order[orderindex].items = this.order.order[orderindex].items.filter(it=> it!==item)
     
@@ -67,9 +71,6 @@ export class PlaceorderComponent {
         }
     }
     )
-    
-     
-
   }
 
   

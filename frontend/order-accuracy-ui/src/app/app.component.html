@@ -1,5 +1,4 @@
-
-
+<!-- 
 
   <nav class="navbar navbar-light bg-light bg-body-tertiary">
     <div class="container-fluid">
@@ -9,21 +8,90 @@
         <a class="btn btn-outline-primary" href="/" type="submit">Home</a>
       </form>
     </div>
-  </nav>
-  
-  <div class="container" >
-    <div class="row justify-content-md-center" [hidden]="isLoggedIn">
-        <div class="col-lg-6 text-center">
-            <h3>Customer Login</h3>
-            <button type="button" class="btn btn-primary btn-lg" (click)="goCustomerDashboard()">GO>></button>
-        </div>
-        <div class="col-lg-6 text-center">
-          <h3>Store Login</h3>
-          <button type="button" class="btn btn-success btn-lg" (click)="goStoreDashboard()">GO>></button>
-      
-    </div>
-</div>
+  </nav> -->
 
-  <router-outlet></router-outlet>
-  <!-- <app-messages></app-messages> -->
+<mat-toolbar color="primary">
+  <span>{{title}}</span>
+  <span class="example-spacer"></span>
+  <span>{{loginDetails.name}}</span>
+  <button *ngIf="isLoggedIn && !loginDetails.name.includes('Store')" mat-icon-button aria-label="Example icon-button with share icon" (click)="snav.open()">
+    <mat-icon matBadge="{{badgeCount}}" matBadgeColor="warn" aria-hidden="false" aria-label="Example home icon" fontIcon="shopping_cart">
+    </mat-icon>
+  </button>
+  <button  mat-icon-button aria-label="Example icon-button with share icon" (click)="goHome()">
+    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home">
+    </mat-icon>
+  </button>
+</mat-toolbar>
+
+
+<mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="0" id="container" fullscreen>
+
+  <mat-sidenav #snav [mode]="'over'" position="end"
+    fixedTopGap="56">
+
+    <div  *ngIf="order.order[0] && !isOrderplaced">
+      <mat-toolbar color="primary">
+        <span>Your Order(s).</span>
+        </mat-toolbar>
+      <mat-list *ngFor="let items of order.order let orderindex = index" style="width:700px">
+        <div mat-subheader> <b>{{items.name}}</b></div>
+        <mat-list-item  *ngFor="let item of items.items let itemindex=index" >
+          <div  matListItemTitle>{{item.name}}</div>
+          
+          <mat-icon  *ngIf="!item.optional" matListItemIcon (click)="removeItem(orderindex,itemindex,item)"> close</mat-icon>
+          <mat-icon  *ngIf="item.optional" matListItemIcon > navigate_next</mat-icon>
+          <!-- <div matListItemLine>{{folder.updated | date}}</div> -->
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </mat-list>
+    <button style="margin-left: 50px;" mat-raised-button color="primary" (click)="placeOrder();">Place your order</button>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+
+    <mat-grid-list cols="2" rowHeight="2:1" *ngIf="!isLoggedIn">
+      <mat-grid-tile>
+        <mat-card class="example-card">
+          <mat-card-header>
+            <mat-card-title>Customer Login </mat-card-title>
+            <mat-card-subtitle>Welcome!!</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Customer, Login here to choose your favourite food</p>
+            <p></p>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <button mat-fab color="primary" (click)="goCustomerDashboard()">GO>></button>
+          </mat-card-actions>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-card class="example-card">
+          <mat-card-header>
+            <mat-card-title>Store Login </mat-card-title>
+            <mat-card-subtitle>Welcome!!</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Fellas, Login here to show your actions..d</p>
+            <p></p>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <button mat-fab color="primary" (click)="goStoreDashboard()">GO>></button>
+          </mat-card-actions>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+    
+      
+   
+    <router-outlet></router-outlet> 
+  </mat-sidenav-content>
   
+</mat-sidenav-container>
+
+
+
+
+  <!-- <app-messages></app-messages> -->

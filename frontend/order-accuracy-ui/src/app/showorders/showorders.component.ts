@@ -22,15 +22,13 @@ export class ShowordersComponent {
   returnorder: any
   details: any = { name: "Store #101" }
 
-
-
-
   constructor(private api: OrderAPIService) {
 
 
     this.api.observable.subscribe(_orders => {
       console.log("In the component")
       console.log(_orders);
+      console.log(this.orders);
       this.orders.map(function (order) {
         if (order.orderId === _orders.orderId) {
           order.order.map(function (o) {
@@ -85,8 +83,6 @@ export class ShowordersComponent {
       let o = this.orders.filter(o => o.orderId === _orders.orderId);
       console.log(o)
     })
-
-
 
 
     this.api.isLoggedIn.next(true);
