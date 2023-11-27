@@ -139,7 +139,7 @@ resource "aws_lambda_permission" "order_sendmessagemessenger_lambda_permissions"
 }
 
 resource "aws_dynamodb_table" "order_messenger_table" {
-  name           = "${var.application_name}-chat-table"
+  name           = "${var.application_name}-WSConIds"
   billing_mode   = "PROVISIONED"
   read_capacity  = 2
   write_capacity = 2
