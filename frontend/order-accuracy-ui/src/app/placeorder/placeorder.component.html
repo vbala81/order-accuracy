@@ -29,18 +29,19 @@
       <div class="end-0">
         <a href="/dashboard/customer/{{loginDetails.id}}">Your orders...</a>
       </div>
-      <mat-grid-list cols="4" rowHeight="1:1">
+      <mat-grid-list cols="4" rowHeight="2:1">
         <mat-grid-tile *ngFor="let foodItems of foodItems">
           <mat-card class="example-card">
             <mat-card-header>
-              <div mat-card-avatar class="example-header-image {{foodItems.name}}"></div>
+              <div mat-card-avatar class="example-header-image {{foodItems.img}}"></div>
               <mat-card-title> {{foodItems.name}} </mat-card-title>
+              <mat-card-subtitle>{{foodItems.description}}</mat-card-subtitle>
             </mat-card-header>
-            <mat-card-content>
-              <p> {{foodItems.description}}</p>
-            </mat-card-content>
+            <!-- <mat-card-content>
+              <p> </p>
+            </mat-card-content> -->
             <mat-card-actions align="end">
-              <button mat-fab color="primary" (click)="addItemtoOrder(foodItems)">
+              <button mat-fab color="warn" (click)="addItemtoOrder(foodItems)">
                 <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add">
                 </mat-icon>
               </button>

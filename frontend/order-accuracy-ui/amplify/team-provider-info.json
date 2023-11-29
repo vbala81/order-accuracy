@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-orderaccuracyui-dev-131931-authRole",
+      "UnauthRoleArn": "arn:aws:iam::868024899531:role/amplify-orderaccuracyui-dev-131931-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::868024899531:role/amplify-orderaccuracyui-dev-131931-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-orderaccuracyui-dev-131931-deployment",
+      "UnauthRoleName": "amplify-orderaccuracyui-dev-131931-unauthRole",
+      "StackName": "amplify-orderaccuracyui-dev-131931",
+      "StackId": "arn:aws:cloudformation:us-east-1:868024899531:stack/amplify-orderaccuracyui-dev-131931/860eac40-8d51-11ee-b64f-0a2fda4e3641",
+      "AmplifyAppId": "d249de9m4j5n1v"
+    },
+    "categories": {
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
+  }
+}

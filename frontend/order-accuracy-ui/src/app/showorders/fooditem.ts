@@ -1,6 +1,7 @@
 export interface FoodItem {
     name: String,
     description: String,
+    img: String,
     items: Item[]
 }
 export interface Item {
@@ -26,16 +27,20 @@ export interface customerOrder {
 
 export const FOODITEMS: FoodItem[] = [
     {
-        name: "Burger", items: [{ name: "Ciabatta Bun", isadded: false, optional: true },
-        { name: "Cripsy Chicken", isadded: false, optional: true },
-        { name: "Lettue", isadded: false, optional: false },
-        { name: "Tomato", isadded: false, optional: false },
-        { name: "Bacon", isadded: false, optional: false },
-        { name: "Cheese", isadded: false, optional: false }],
-        description: " Juicy Chicken Burger with bacon slices , lettue, tomato and Cheese"
+        name: "Quarter Pounder with Cheese", items: [{ name: "Seasme Seed Bun", isadded: false, optional: true },
+        { name: "Beef", isadded: false, optional: true },
+        { name: "Shredded Lettuce", isadded: false, optional: false },
+        { name: "Roma Tomato", isadded: false, optional: false },
+        { name: "3 Half Stripes Bacon", isadded: false, optional: false },
+        { name: "American Cheese", isadded: false, optional: false }],
+        description: " Quarter Pounder with Cheese Burger with  bacon slices , Lettuce, Roma Tomato and American Cheese",
+        img: 'Burger'
+        
     },
-    { name: "Fries", items: [
+    { name: "Medium Fries", items: [
         { name: "fries", isadded: false, optional: true },
-        { name: "Cheese", isadded: false, optional: false }
-    ], description: "Cripsy fries" }
+    ], description: "Medium Crispy fries" ,img:'Fries'},
+    { name: "Large Fries", items: [
+        { name: "fries", isadded: false, optional: true },
+    ], description: "Large Crispy fries" ,img:'Fries'}
 ];

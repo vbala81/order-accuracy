@@ -10,7 +10,7 @@
     </div>
   </nav> -->
 
-<mat-toolbar color="primary">
+<mat-toolbar color="accent">
   <span>{{title}}</span>
   <span class="example-spacer"></span>
   <span>{{loginDetails.name}}</span>
@@ -31,7 +31,7 @@
     fixedTopGap="56">
 
     <div  *ngIf="order.order[0] && !isOrderplaced">
-      <mat-toolbar color="primary">
+      <mat-toolbar color="accent">
         <span>Your Order(s).</span>
         </mat-toolbar>
       <mat-list *ngFor="let items of order.order let orderindex = index" style="width:700px">
@@ -45,7 +45,7 @@
         </mat-list-item>
         <mat-divider></mat-divider>
       </mat-list>
-    <button style="margin-left: 50px;" mat-raised-button color="primary" (click)="placeOrder();">Place your order</button>
+    <button style="margin-left: 50px;" mat-raised-button color="warn" (click)="placeOrder();">Place your order</button>
     </div>
   </mat-sidenav>
 
@@ -63,7 +63,7 @@
             <p></p>
           </mat-card-content>
           <mat-card-actions align="end">
-            <button mat-fab color="primary" (click)="goCustomerDashboard()">GO>></button>
+            <button mat-fab color="warn" (click)="goCustomerDashboard()">GO>></button>
           </mat-card-actions>
         </mat-card>
       </mat-grid-tile>
@@ -78,7 +78,7 @@
             <p></p>
           </mat-card-content>
           <mat-card-actions align="end">
-            <button mat-fab color="primary" (click)="goStoreDashboard()">GO>></button>
+            <button mat-fab color="warn" (click)="goStoreDashboard()">GO>></button>
           </mat-card-actions>
         </mat-card>
       </mat-grid-tile>
