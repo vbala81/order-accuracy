@@ -16,5 +16,23 @@
         "S3AndCloudFront": {}
       }
     }
+  },
+  "orderui": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-orderaccuracyui-orderui-91104-authRole",
+      "UnauthRoleArn": "arn:aws:iam::868024899531:role/amplify-orderaccuracyui-orderui-91104-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::868024899531:role/amplify-orderaccuracyui-orderui-91104-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-orderaccuracyui-orderui-91104-deployment",
+      "UnauthRoleName": "amplify-orderaccuracyui-orderui-91104-unauthRole",
+      "StackName": "amplify-orderaccuracyui-orderui-91104",
+      "StackId": "arn:aws:cloudformation:us-east-1:868024899531:stack/amplify-orderaccuracyui-orderui-91104/23d6eab0-9378-11ee-b9a5-0a1facaa1847",
+      "AmplifyAppId": "d249de9m4j5n1v"
+    },
+    "categories": {
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
   }
 }

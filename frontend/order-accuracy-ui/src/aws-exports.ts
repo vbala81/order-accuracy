@@ -10,8 +10,8 @@
 // };
 
 const awsmobile = {
-    "aws_api_gateway_url" : "https://zs1pr2dq6i.execute-api.us-east-1.amazonaws.com/develop",
-    "web_socket_url" : "wss://eielxv17ll.execute-api.us-east-1.amazonaws.com/develop"
+    "aws_api_gateway_url" : "https://uj1tue7gwk.execute-api.us-east-1.amazonaws.com/develop",
+    "web_socket_url" : "wss://lnqr3kglj9.execute-api.us-east-1.amazonaws.com/develop"
 }
 
 

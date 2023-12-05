@@ -167,9 +167,9 @@
               "QueryString": "false"
             },
             "ViewerProtocolPolicy": "redirect-to-https",
-            "DefaultTTL": 86400,
-            "MaxTTL": 31536000,
-            "MinTTL": 60,
+            "DefaultTTL": "86400",
+            "MaxTTL": "31536000",
+            "MinTTL": "60",
             "Compress": true
           },
           "DefaultRootObject": "index.html",
@@ -191,6 +191,12 @@
               "ErrorCode": 404,
               "ResponseCode": 200,
               "ResponsePagePath": "/"
+            },
+            {
+              "ErrorCode": "405",
+              "ResponseCode": 200,
+              "ResponsePagePath": "/",
+              "ErrorCachingMinTTL": 300
             }
           ]
         }
