@@ -19,17 +19,39 @@ export class CustomerorderComponent {
     this.api.customerObservable.subscribe(_cust => {
       console.log(_cust);
       this.placedOrders.map((_order) => {
-        if (_order.orderId === _cust.oid) {
+        
           _order.orderstatus = _cust.omessage
           if (_cust.items && _cust.items.length > 0) {
-            let _o_names = _order.order.map((_o) => _o.name);
-            console.log(_o_names.join(","))
-            if(_cust.items.join(",") === _o_names.join(","))
-              _order.orderstatus = "Your order is completed"
+            let _o_names = _order.order.map((_o) => _o.itemname);
+            
+            //console.log(_cust.items.join(","))
+            var misseditem = "";
+            _o_names.forEach(_s => {
+             console.log(_s);
+             console.log(_cust.items.join(","))
+             console.log(_cust.items.join(",").includes(_s.toString()));
+              
+              if (!_cust.items.join(",").includes(_s.toString())) 
+                  misseditem = misseditem + " " + _s;
+
+            })
+
+            console.log(misseditem);
+
+            if (misseditem.trim()!="") 
+              _order.orderstatus = misseditem + " is missing in your order";
             else 
-              _order.orderstatus = "Some of the item(s) is missing in your order";
+              _order.orderstatus = "Your order is completed"
+           
+
+            // if(_cust.items.join(",") === _o_names.join(","))
+            //   _order.orderstatus = "Your order is completed"
+            // else 
+            //   _order.orderstatus = "Some of the item(s) is missing in your order";
+
+
           }
-        }
+        
       }
 
       )

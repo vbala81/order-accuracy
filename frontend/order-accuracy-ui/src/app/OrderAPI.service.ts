@@ -60,10 +60,10 @@ export class OrderAPIService {
             console.log(message.data);
                
                 let wsmessage = JSON.parse(message.data);
-                if(wsmessage.orderId) {
+                if(wsmessage.name) {
                   Object.assign(this.orderItem,JSON.parse(message.data));
                   this.subject.next(this.orderItem);
-                  console.log(this.orderItem);
+                 // console.log(this.orderItem);
 
                 } else {
                   Object.assign(this.custOrder, wsmessage);

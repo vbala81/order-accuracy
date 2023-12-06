@@ -17,6 +17,7 @@ export class AppComponent   implements OnInit {
 
   isOrderplaced = false;
   badgeCount:number = 0;
+  disableOrder = false;
 
   @ViewChild('snav', { static: true })
   myNav!: MatSidenav;
@@ -35,6 +36,7 @@ export class AppComponent   implements OnInit {
   ngOnInit(): void {
     console.log("On init ")
     console.log(this.myNav)
+    this.oneorderallowed();
   }
 
   
@@ -68,6 +70,13 @@ export class AppComponent   implements OnInit {
   removeItem(orderindex: number, itemindex: number, item:Item) {
     this.order.order[orderindex].items = this.order.order[orderindex].items.filter(it=> it!==item)
     
+  }
+
+  oneorderallowed() {
+    this.api.listorders().subscribe(_r => {
+      if(_r.Count > 0)
+       this.disableOrder = true;
+    });
   }
   
 

@@ -45,7 +45,7 @@
         </mat-list-item>
         <mat-divider></mat-divider>
       </mat-list>
-    <button style="margin-left: 50px;" mat-raised-button color="warn" (click)="placeOrder();">Place your order</button>
+    <button style="margin-left: 50px;" mat-raised-button [disabled]="disableOrder" color="warn" (click)="placeOrder();">Place your order</button>
     </div>
   </mat-sidenav>
 

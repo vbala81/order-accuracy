@@ -10,14 +10,18 @@
             <span class="badge bg-primary rounded-pill">{{order.orderdate}}</span>
           </mat-card-subtitle>
           <mat-card-subtitle >
-            <mat-chip-option *ngIf="order.orderstatus" color="accent" selected>{{order.orderstatus}}</mat-chip-option>
+            <mat-chip-option *ngIf="order.orderstatus && order.orderstatus.includes('item')" color="warn" selected>{{order.orderstatus}}</mat-chip-option>
+            <mat-chip-option *ngIf="order.orderstatus && !order.orderstatus.includes('item')" color="accent" selected>{{order.orderstatus}}</mat-chip-option>
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
           <mat-list *ngFor="let items of order.order">
             <div mat-subheader>{{items.name}}</div>
-            <mat-list-item  *ngFor="let item of items.items" >
-              <mat-icon  matListItemIcon> {{item.isadded ? 'check' : 'navigate_next'}}</mat-icon>
+            <div mat-subheader hidden>{{items.itemname}}</div>
+            <mat-list-item  *ngFor="let item of items.orderedItems" >
+              <!-- <mat-icon  matListItemIcon> {{item.isadded ? 'check' : 'navigate_next'}}</mat-icon> -->
+              <mat-icon  *ngIf="item.isadded" matListItemIcon>check</mat-icon>
+              <span *ngIf="!item.isadded" matListItemIcon><b>{{item.sequencenumber}} </b></span>
               <div [ngClass]="{'success' : item.isadded}"  matListItemTitle>{{item.name}}</div>
               <!-- <div matListItemLine>{{folder.updated | date}}</div> -->
             </mat-list-item>

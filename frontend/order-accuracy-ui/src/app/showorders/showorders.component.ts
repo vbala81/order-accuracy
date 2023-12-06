@@ -26,62 +26,68 @@ export class ShowordersComponent {
 
 
     this.api.observable.subscribe(_orders => {
-      console.log("In the component")
-      console.log(_orders);
-      console.log(this.orders);
-      this.orders.map(function (order) {
-        if (order.orderId === _orders.orderId) {
-          order.order.map(function (o) {
-
-            if (o.name == _orders.name) {
-              o.items.map(_o => { if (_o.name == _orders.item) _o.isadded = true })
-            }
-
-            // Checking the order status
-
-            let allareadded = o.items.filter(_all => !_all.isadded)
-            console.log(allareadded);
-            if (allareadded && allareadded.length == 0) {
-              order.orderstatus = "Your order is ready to serve"
-              let message = {
-                action: "sendmessage",
-                message: JSON.stringify({
-                  oid: _orders.orderId,
-                  omessage: order.orderstatus,
-                  items: []
-                })
-            }
-            console.log("MESSAGE IN THE STORE TO CUSTOMER");
-            console.log(JSON.stringify(message));
-            api.send(JSON.stringify(message));
-            }
-            else {
-
-              order.orderstatus = "Your order is progress";
-              console.log(o.items.length + "=====" + allareadded.length);
-              if(allareadded && allareadded.length == 1)
-              {
-                let message = {
-                    action: "sendmessage",
-                    message: JSON.stringify({
-                      oid: _orders.orderId,
-                      omessage: order.orderstatus,
-                      items: []
-                    })
+      
+      if (this.orders.length > 0) {
+        let forder = this.orders[0].order.filter(_x => _x.itemname == _orders.name);
+        if (forder.length > 0) {
+          let filterbysequence = forder[0].orderedItems.filter(_i => !_i.isadded).sort((a, b) => a.sequencenumber - b.sequencenumber).at(0);
+          if(!filterbysequence) {
+            this.orders[0].orderstatus = "Extra item is picked!! " + _orders.item; 
+            return;
+          }
+          let firstelement = filterbysequence?.name;
+          let firstelementseq = filterbysequence?.sequencenumber;
+          firstelement = firstelement?.includes('(') ? firstelement.split('(')[0].trim() : firstelement
+          //console.log(firstelement);
+          if (firstelement?.toLowerCase() === _orders.item.toLowerCase()) {
+            this.orders[0].order.filter(_x => _x.itemname == _orders.name)[0].orderedItems.filter(_i => !_i.isadded).sort((a, b) => a.sequencenumber - b.sequencenumber).map(
+              (_ad => {
+                if (_ad.name.toLowerCase().includes(_orders.item.toLowerCase()) &&
+                  _ad.sequencenumber == firstelementseq
+                ) {
+                  _ad.isadded = true;
+                 // console.log(_ad)
                 }
-                console.log("MESSAGE IN THE STORE TO CUSTOMER");
-                console.log(JSON.stringify(message));
-                api.send(JSON.stringify(message));
-              }
 
+              })
+            )
+            this.orders[0].orderstatus = "Your order is in progress";   
+          } else {
+            this.orders[0].orderstatus = "Wrong item picked!!  Next Item is " + firstelement   
+          }
+
+        } else {
+
+          this.orders[0].orderstatus = "Wrong Item picked :: " + _orders.name
+        }
+        //filter(_i => !_i.isadded).sort((a,b) => a.sequencenumber - b.sequencenumber).at(0)?.name 
+
+        // Checking the order is ready to serve.
+
+        this.orders[0].order.forEach((_item, index) => {
+            let anyitemsnotadded = _item.orderedItems.filter(_f => !_f.isadded);
+            console.log(anyitemsnotadded);
+            if(anyitemsnotadded.length == 0 && index == _item.items.length){
+            this.orders[0].orderstatus = "Your order is ready to serve!! ";
+            let message = {
+              action: "sendmessage",
+              message: JSON.stringify({
+                oid: '',
+                omessage: "Your order is ready to serve!!",
+                items: []
+              })
+          }
+          console.log("MESSAGE IN THE STORE TO CUSTOMER");
+          console.log(JSON.stringify(message));
+          api.send(JSON.stringify(message));
             }
 
+        })
 
-          });
-        }
-      });
-      let o = this.orders.filter(o => o.orderId === _orders.orderId);
-      console.log(o)
+
+      }
+
+
     })
 
 
