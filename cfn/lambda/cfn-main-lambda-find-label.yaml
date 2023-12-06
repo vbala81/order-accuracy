@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Project Might Lambda Function - Find Label
+Description: Project Mighty Lambda Function - Find Label
 
 Parameters:
   ClientName:
@@ -30,21 +30,13 @@ Parameters:
   S3BucketName:
     Type: String
     Description: S3 Bucket to Upload Lambda Code
-  LambdaExectionRoleName:
-    Type: String
-    Description: Lambda IAM Role
-  DynamoDBOrdersTableName:
-    Type: String
-    Description: Name of Orders table
-    Default: aabg-mighty-us-east-1-dynamodb-orders
-  DynamoDBWSConIdsTableName:
-    Type: String
-    Description: Name of WSConIds table
-    Default: aabg-mighty-us-east-1-dynamodb-WSConIds
   S3BucketToInvokeLambda:
     Type: String
     Description: Bucket name which will invoke this lambda
-    Default: aabg-mighty-us-east-1-s3-v1
+  IAMRoleStackName:
+    Type: String
+    Description: Name of the stack containing required IAM Roles
+    Default: project-mighty-iam-roles-stack
 
 Resources:
   LambdaFunction:
@@ -52,89 +44,15 @@ Resources:
     Properties:
       FunctionName: !Join ["-", [!Ref ClientName, !Ref ProductName, !Ref AWS::Region, !Ref ModuleName, !Ref LambdaFunctionName]]
       Handler: findlabelsfromImage.handler
-      Role:
-        Fn::GetAtt:
-        - LambdaExecutionRole
-        - Arn
+      Environment:
+        Variables:
+          lambda_function: aabg-mighty-us-east-1-lambda-send-message
+      Role: !ImportValue
+        Fn::Sub: "${IAMRoleStackName}-LambdaArn"
       Code:
         S3Bucket: !Ref S3BucketName
         S3Key: lambda_function_findlabels.zip
       Runtime: nodejs16.x
-
-  LambdaExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Ref LambdaExectionRoleName
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
-      Path: "/"
-      Policies:
-      - PolicyName: AWSLambdaLogsPermissions
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-            Resource: "*"
-      - PolicyName: AWSLambdaS3Permissions
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - s3:GetObject
-            Resource:
-            - !Join ['', ['arn:aws:s3:::', !Ref S3BucketName]]
-            - !Join ['', ['arn:aws:s3:::', !Ref S3BucketName, '/*']]
-      - PolicyName: AWSLambdaRekognitionPermissions
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - rekognition:*
-            Resource: "*"
-      - PolicyName: AWSLambdaDynamoDBPermissions
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - dynamodb:Scan
-            - dynamodb:PutItem
-            - dynamodb:DeleteItem
-            Resource:
-            - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBOrdersTableName}'
-            - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBWSConIdsTableName}'
-      - PolicyName: AWSLambdaAGWPermissions
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - execute-api:*
-            Resource:
-            - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*'
-      - PolicyName: AWSLambdaInvokePermissions
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - lambda:InvokeFunction
-            - lambda:InvokeAsync
-            Resource:
-            - '*'
 
   LambdaInvokePermission:
     Type: AWS::Lambda::Permission
@@ -143,3 +61,7 @@ Resources:
       FunctionName: !Ref LambdaFunction
       Principal: s3.amazonaws.com
       SourceArn: !Join ['', ['arn:aws:s3:::', !Ref S3BucketToInvokeLambda]]
+  
+Outputs:
+  LambdaFunctionArn:
+    Value: !GetAtt LambdaFunction.Arn

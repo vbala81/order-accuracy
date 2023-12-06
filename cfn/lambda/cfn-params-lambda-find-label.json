@@ -24,15 +24,7 @@
       "ParameterValue": "aabg-mighty-us-east-1-s3-lambda-code-v1"
     },
     {
-      "ParameterKey": "LambdaExectionRoleName",
-      "ParameterValue": "aabg-mighty-us-east-1-lambda-findlabel-role"
-    },
-    {
-      "ParameterKey": "DynamoDBOrdersTableName",
-      "ParameterValue": "aabg-mighty-us-east-1-dynamodb-orders"
-    },
-    {
-      "ParameterKey": "DynamoDBWSConIdsTableName",
-      "ParameterValue": "aabg-mighty-us-east-1-dynamodb-WSConIds"
+      "ParameterKey": "S3BucketToInvokeLambda",
+      "ParameterValue": "aabg-mighty-us-east-1-s3-v1"
     }
   ]
