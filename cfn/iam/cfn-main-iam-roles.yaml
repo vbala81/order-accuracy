@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Project Mighty IAM Roles
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: S3 Bucket to Upload Lambda Code
+  LambdaExectionRoleName:
+    Type: String
+    Description: Lambda IAM Role
+  DynamoDBOrdersTableName:
+    Type: String
+    Description: Name of Orders table
+    Default: aabg-mighty-us-east-1-dynamodb-orders
+  DynamoDBWSConIdsTableName:
+    Type: String
+    Description: Name of WSConIds table
+    Default: aabg-mighty-us-east-1-dynamodb-WSConIds
+    
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref LambdaExectionRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: AWSLambdaLogsPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: "*"
+      - PolicyName: AWSLambdaS3Permissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:GetObject
+            Resource:
+            - !Join ['', ['arn:aws:s3:::', !Ref S3BucketName]]
+            - !Join ['', ['arn:aws:s3:::', !Ref S3BucketName, '/*']]
+      - PolicyName: AWSLambdaRekognitionPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - rekognition:*
+            Resource: "*"
+      - PolicyName: AWSLambdaDynamoDBPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:DeleteItem
+            Resource:
+            - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBOrdersTableName}'
+            - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBWSConIdsTableName}'
+      - PolicyName: AWSLambdaAGWPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - execute-api:*
+            Resource:
+            - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*'
+      - PolicyName: AWSLambdaInvokePermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - lambda:InvokeFunction
+            - lambda:InvokeAsync
+            Resource:
+            - '*'
+
+Outputs:
+  LambdaRoleArn:
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-LambdaArn"

@@ -1,3 +1,6 @@
+IAM Roles
+aws cloudformation create-stack --stack-name project-mighty-iam-roles-stack --template-body file://cfn-main-iam-roles.yaml --parameters file://cfn-params-iam-roles.json --capabilities CAPABILITY_NAMED_IAM
+
 S3 (ORDER ACCURACY CODE)
 aws cloudformation create-stack --stack-name project-mighty-s3-main-stack --template-body file://cfn-main-s3.yaml --parameters file://cfn-params-s3.json --capabilities CAPABILITY_NAMED_IAM
 
